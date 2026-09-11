@@ -7,7 +7,6 @@
 <meta name="description" content="Ksawier (Vexo) — Full Stack Developer. FiveM Lua, webaplikacje i systemy dla biznesu i gamingu."/>
 <meta property="og:title" content="VEXO.DEV — Full Stack Developer"/>
 <meta property="og:description" content="FiveM Lua scripting, web applications, and backend systems."/>
-<!-- Favicon SVG -->
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%232563eb'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='central' text-anchor='middle' font-family='monospace' font-weight='900' font-size='16' fill='white'%3EV%3C/text%3E%3C/svg%3E"/>
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
@@ -24,31 +23,22 @@
 <style>
 *,*::before,*::after{box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{font-family:'Inter',system-ui,sans-serif;background:#f8fafc;color:#0f172a;-webkit-font-smoothing:antialiased;overflow-x:hidden;position:relative}
-
-/* Subtle grid */
+body{-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;font-family:'Inter',system-ui,sans-serif;background:#f8fafc;color:#0f172a;-webkit-font-smoothing:antialiased;overflow-x:hidden;position:relative}
 body::before{content:'';position:fixed;inset:0;
   background-image:linear-gradient(rgba(37,99,235,.032) 1px,transparent 1px),linear-gradient(90deg,rgba(37,99,235,.032) 1px,transparent 1px);
   background-size:44px 44px;pointer-events:none;z-index:0}
-
-/* Scrollbar */
 ::-webkit-scrollbar{width:4px}
 ::-webkit-scrollbar-track{background:#f1f5f9}
 ::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:4px}
 ::-webkit-scrollbar-thumb:hover{background:#2563eb}
 ::selection{background:#bfdbfe;color:#1e3a8a}
-
-/* Status pulse */
 .pulse{display:inline-block;width:8px;height:8px;background:#22c55e;border-radius:50%;
   animation:pulse-anim 2s infinite;box-shadow:0 0 0 0 rgba(34,197,94,.45);flex-shrink:0}
 @keyframes pulse-anim{0%{box-shadow:0 0 0 0 rgba(34,197,94,.45)}70%{box-shadow:0 0 0 7px rgba(34,197,94,0)}100%{box-shadow:0 0 0 0 rgba(34,197,94,0)}}
-
-/* Navbar */
 .navbar{position:fixed;top:0;left:0;right:0;z-index:200;
   background:rgba(248,250,252,.9);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
   border-bottom:1px solid rgba(226,232,240,.9);transition:box-shadow .3s}
 .navbar.scrolled{box-shadow:0 2px 24px rgba(0,0,0,.07)}
-
 .nav-link{font-size:.825rem;font-weight:500;color:#64748b;text-decoration:none;
   padding:4px 0;position:relative;transition:color .2s}
 .nav-link::after{content:'';position:absolute;bottom:-2px;left:0;right:100%;
@@ -56,51 +46,38 @@ body::before{content:'';position:fixed;inset:0;
 .nav-link:hover{color:#2563eb}
 .nav-link:hover::after,.nav-link.active::after{right:0}
 .nav-link.active{color:#2563eb}
-
 .lang-wrap{display:flex;align-items:center;border:1px solid #e2e8f0;border-radius:8px;overflow:hidden}
 .lang-btn{font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:600;
   padding:5px 11px;background:transparent;color:#94a3b8;cursor:pointer;
   border:none;transition:all .2s;letter-spacing:.05em}
 .lang-btn.on{background:#0f172a;color:#fff}
-
 .hire-btn{background:#0f172a;color:#fff;font-size:.78rem;font-weight:700;
   padding:9px 20px;border-radius:10px;text-decoration:none;letter-spacing:.01em;
   transition:background .2s,transform .15s;white-space:nowrap;display:inline-block}
 .hire-btn:hover{background:#2563eb;transform:translateY(-1px)}
-
-/* Hero */
 .badge{font-family:'JetBrains Mono',monospace;font-size:.63rem;letter-spacing:.18em;
   color:#2563eb;text-transform:uppercase;background:#eff6ff;border:1px solid #bfdbfe;
   padding:5px 14px;border-radius:100px;display:inline-flex;align-items:center;gap:7px}
-
 .hero-h{font-size:clamp(1.75rem,4.5vw,3.2rem);font-weight:900;line-height:1.05;
   letter-spacing:-.035em;color:#0f172a}
-
-/* Cards */
 .card{background:#fff;border:1px solid #e2e8f0;border-radius:20px;
   box-shadow:0 2px 8px rgba(0,0,0,.04),0 1px 2px rgba(0,0,0,.03);
   transition:box-shadow .3s,transform .3s}
 .card:hover{box-shadow:0 8px 28px rgba(0,0,0,.08),0 2px 8px rgba(0,0,0,.04);transform:translateY(-2px)}
-
 .skill-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;
   justify-content:center;font-size:1.1rem;margin-bottom:10px;flex-shrink:0}
-
-/* Bio-link card */
 .bio-card{background:#fff;border:1px solid #e2e8f0;border-radius:28px;
   box-shadow:0 4px 16px rgba(0,0,0,.06),0 1px 4px rgba(0,0,0,.04);
   transition:box-shadow .3s}
 .bio-card:hover{box-shadow:0 16px 48px rgba(0,0,0,.1)}
-
 .avatar-wrap{width:82px;height:82px;border-radius:50%;padding:3px;
   background:linear-gradient(135deg,#2563eb,#7c3aed)}
 .avatar-wrap img{width:100%;height:100%;border-radius:50%;border:2.5px solid #fff;
   object-fit:cover;display:block}
-
 .social-btn{width:36px;height:36px;border-radius:50%;background:#f1f5f9;
   border:1px solid #e2e8f0;display:flex;align-items:center;justify-content:center;
   color:#64748b;font-size:.8rem;text-decoration:none;transition:all .2s;cursor:pointer}
 .social-btn:hover{background:#0f172a;color:#fff;border-color:#0f172a;transform:translateY(-2px)}
-
 .bio-tile{border:1px solid #f1f5f9;border-radius:14px;padding:11px 14px;
   display:flex;align-items:center;gap:10px;text-decoration:none;
   background:#fafafa;transition:all .2s;color:#0f172a;width:100%;text-align:left}
@@ -109,8 +86,6 @@ body::before{content:'';position:fixed;inset:0;
   border-radius:9px;display:flex;align-items:center;justify-content:center;
   font-size:.9rem;flex-shrink:0;transition:border-color .2s}
 .bio-tile:hover .tile-icon{border-color:#bfdbfe}
-
-/* Tech chips */
 .tc{display:flex;flex-direction:column;align-items:center;gap:6px;
   padding:14px 12px;background:#fff;border:1px solid #e2e8f0;border-radius:14px;
   min-width:66px;transition:all .2s;cursor:default}
@@ -119,16 +94,10 @@ body::before{content:'';position:fixed;inset:0;
 .tc-i{font-size:1.35rem;line-height:1}
 .tc-l{font-family:'JetBrains Mono',monospace;font-size:.58rem;color:#64748b;
   font-weight:600;text-align:center;letter-spacing:.03em}
-
-/* Section label */
 .slabel{font-family:'JetBrains Mono',monospace;font-size:.6rem;
   letter-spacing:.22em;color:#2563eb;text-transform:uppercase}
-
-/* Process steps */
 .step-num{width:40px;height:40px;border-radius:12px;display:flex;
   align-items:center;justify-content:center;flex-shrink:0}
-
-/* Float widget */
 .float-widget{position:fixed;bottom:22px;right:22px;z-index:300}
 .float-bubble{background:#fff;border:1px solid #e2e8f0;border-radius:18px;
   padding:16px 18px;box-shadow:0 8px 32px rgba(0,0,0,.13);max-width:252px;
@@ -140,28 +109,20 @@ body::before{content:'';position:fixed;inset:0;
   color:#fff;font-size:1.15rem;box-shadow:0 4px 16px rgba(0,0,0,.22);
   transition:transform .2s,background .2s;margin-left:auto}
 .ftoggle:hover{background:#2563eb;transform:scale(1.07)}
-
-/* Reveal */
 .reveal{opacity:0;transform:translateY(20px);
   transition:opacity .6s ease-out,transform .6s ease-out}
 .reveal.in{opacity:1;transform:translateY(0)}
-
-/* Toast */
 .toast{position:fixed;top:68px;left:50%;transform:translateX(-50%);
   background:#0f172a;color:#fff;font-size:.72rem;padding:8px 18px;
   border-radius:10px;z-index:9999;opacity:0;transition:opacity .2s;
   pointer-events:none;font-family:'JetBrains Mono',monospace;white-space:nowrap}
 .toast.show{opacity:1}
-
-/* Mobile menu */
 #mmenu{display:none;flex-direction:column;padding:10px 0 14px;
   border-top:1px solid #e2e8f0;gap:2px}
 #mmenu.open{display:flex}
 .mlink{font-size:.88rem;font-weight:500;color:#475569;text-decoration:none;
   padding:9px 0;border-bottom:1px solid #f8fafc;transition:color .2s}
 .mlink:hover{color:#2563eb}
-
-/* Lanyard presence */
 .presence-dot{position:absolute;bottom:3px;right:3px;width:16px;height:16px;
   border-radius:50%;border:3px solid #fff;background:#6b7280;
   transition:background .4s}
@@ -172,17 +133,11 @@ body::before{content:'';position:fixed;inset:0;
 </style>
 </head>
 <body>
-
 <div class="toast" id="toast"></div>
-
-<!-- ████ NAVBAR ████ -->
 <nav class="navbar" id="navbar">
   <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-10">
     <div class="flex items-center justify-between h-14">
-
-      <!-- Logo + status -->
       <a href="#" class="flex items-center gap-2.5 flex-shrink-0 group">
-        <!-- Logo SVG -->
         <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" class="flex-shrink-0">
           <rect width="28" height="28" rx="7" fill="#2563eb"/>
           <text x="14" y="19" text-anchor="middle" font-family="monospace" font-weight="900" font-size="14" fill="white">V</text>
@@ -193,16 +148,12 @@ body::before{content:'';position:fixed;inset:0;
           <span class="text-green-700 text-xs font-semibold" data-pl="Dostępny" data-en="Available">Dostępny</span>
         </span>
       </a>
-
-      <!-- Desktop nav -->
       <div class="hidden md:flex items-center gap-8">
         <a href="#about"    class="nav-link" id="nl-about"    data-pl="O&nbsp;mnie"  data-en="About">O&nbsp;mnie</a>
         <a href="#services" class="nav-link" id="nl-services" data-pl="Usługi"  data-en="Services">Usługi</a>
         <a href="#process"  class="nav-link" id="nl-process"  data-pl="Proces"  data-en="Process">Proces</a>
         <a href="#contact"  class="nav-link" id="nl-contact"  data-pl="Kontakt" data-en="Contact">Kontakt</a>
       </div>
-
-      <!-- Right controls -->
       <div class="hidden md:flex items-center gap-3">
         <div class="lang-wrap">
           <button class="lang-btn on" id="lpl" onclick="setLang('pl')">PL</button>
@@ -210,15 +161,11 @@ body::before{content:'';position:fixed;inset:0;
         </div>
         <a href="#contact" class="hire-btn" data-pl="Zatrudnij mnie" data-en="Hire me">Zatrudnij mnie</a>
       </div>
-
-      <!-- Hamburger -->
       <button class="md:hidden p-2 rounded-xl border border-slate-200 text-slate-600 hover:border-cobalt transition-colors"
               onclick="toggleMenu()" id="hbtn" aria-label="Menu">
         <i class="fa-solid fa-bars text-sm" id="hico"></i>
       </button>
     </div>
-
-    <!-- Mobile menu -->
     <div id="mmenu">
       <a href="#about"    class="mlink" onclick="closeMenu()" data-pl="O&nbsp;mnie"  data-en="About">O&nbsp;mnie</a>
       <a href="#services" class="mlink" onclick="closeMenu()" data-pl="Usługi"  data-en="Services">Usługi</a>
@@ -235,17 +182,13 @@ body::before{content:'';position:fixed;inset:0;
     </div>
   </div>
 </nav>
-
-<!-- ████ HERO ████ -->
 <section class="relative pt-28 pb-4 px-4 sm:px-6 lg:px-10" id="about">
   <div class="max-w-6xl mx-auto">
-
     <div class="flex justify-center mb-7 reveal">
       <span class="badge"><span class="pulse"></span>
         <span data-pl="Dostępny na nowe projekty" data-en="Available for new projects">Dostępny na nowe projekty</span>
       </span>
     </div>
-
     <div class="text-center reveal" style="transition-delay:.06s">
       <h1 class="hero-h mb-4">
         VEXO<span class="text-cobalt">.</span>DEV&thinsp;—&thinsp;<span class="text-cobalt">FULL&nbsp;STACK</span>&nbsp;&amp;&nbsp;WEB&nbsp;DEVELOPER
@@ -256,14 +199,8 @@ body::before{content:'';position:fixed;inset:0;
         Koduję wydajne systemy w FiveM Lua i buduję schludne aplikacje oraz strony webowe dla biznesu i gamingu.
       </p>
     </div>
-
-    <!-- ── Three-column grid ── -->
     <div class="grid grid-cols-1 lg:grid-cols-[1fr_300px_1fr] gap-4 items-start reveal" style="transition-delay:.12s">
-
-      <!-- ── LEFT column ── -->
       <div class="flex flex-col gap-4">
-
-        <!-- Skill card 1 -->
         <div class="card p-5">
           <div class="skill-icon bg-blue-50"><i class="fa-solid fa-globe text-cobalt"></i></div>
           <h3 class="font-bold text-sm text-slate-900 mb-1.5"
@@ -281,8 +218,6 @@ body::before{content:'';position:fixed;inset:0;
             <span class="text-xs bg-blue-50 text-blue-700 border border-blue-100 rounded-full px-2.5 py-0.5 font-mono font-medium">Next.js</span>
           </div>
         </div>
-
-        <!-- Skill card 2 -->
         <div class="card p-5">
           <div class="skill-icon bg-violet-50"><i class="fa-solid fa-box-open text-violet-600"></i></div>
           <h3 class="font-bold text-sm text-slate-900 mb-1.5">ox_inventory / ox_lib</h3>
@@ -297,8 +232,6 @@ body::before{content:'';position:fixed;inset:0;
             <span class="text-xs bg-violet-50 text-violet-700 border border-violet-100 rounded-full px-2.5 py-0.5 font-mono font-medium">ESX</span>
           </div>
         </div>
-
-        <!-- Mini stats -->
         <div class="grid grid-cols-2 gap-3">
           <div class="card p-4 text-center">
             <div class="text-3xl font-black text-cobalt tracking-tight">3+</div>
@@ -312,11 +245,7 @@ body::before{content:'';position:fixed;inset:0;
           </div>
         </div>
       </div>
-
-      <!-- ── CENTER: Bio card ── -->
       <div class="bio-card p-6 flex flex-col items-center gap-4 w-full">
-
-        <!-- Avatar — Discord via unavatar -->
         <div class="avatar-container">
           <div class="avatar-wrap">
             <img id="lanyard-avatar"
@@ -326,8 +255,6 @@ body::before{content:'';position:fixed;inset:0;
           </div>
           <span class="presence-dot" id="lanyard-dot" title="Ładowanie..."></span>
         </div>
-
-        <!-- Name block -->
         <div class="text-center">
           <p class="font-mono text-xs text-slate-400 tracking-widest mb-0.5">@VEXO</p>
           <h2 class="font-black text-xl text-slate-900 tracking-tight">vex<span class="text-cobalt">$</span></h2>
@@ -336,13 +263,8 @@ body::before{content:'';position:fixed;inset:0;
             Full Stack &amp; FiveM Developer
           </p>
         </div>
-
-
         <div class="w-full h-px bg-slate-100"></div>
-
-        <!-- Bio tiles -->
         <div class="w-full flex flex-col gap-2">
-
           <button class="bio-tile" onclick="openDiscord()" id="btn-disc-open">
             <div class="tile-icon"><i class="fa-brands fa-discord text-indigo-500 text-sm"></i></div>
             <div class="flex-1 min-w-0">
@@ -351,8 +273,6 @@ body::before{content:'';position:fixed;inset:0;
             </div>
             <i class="fa-solid fa-arrow-right text-slate-300 text-xs flex-shrink-0"></i>
           </button>
-
-          <!-- Steam tile -->
           <a href="https://steamcommunity.com/id/vexo7/" target="_blank" rel="noopener" class="bio-tile">
             <div class="tile-icon"><i class="fa-brands fa-steam text-slate-700 text-sm"></i></div>
             <div class="flex-1 min-w-0">
@@ -361,14 +281,9 @@ body::before{content:'';position:fixed;inset:0;
             </div>
             <i class="fa-solid fa-arrow-right text-slate-300 text-xs flex-shrink-0"></i>
           </a>
-
         </div>
-
-        <!-- Primary CTA -->
         <a href="#contact" class="hire-btn w-full text-center text-sm py-2.5"
            data-pl="Zatrudnij mnie" data-en="Hire me">Zatrudnij mnie</a>
-
-        <!-- Discord ID copy hint -->
         <button onclick="copyDiscord()"
           class="flex items-center gap-1.5 text-xs text-slate-400 hover:text-cobalt transition-colors font-mono"
           id="btn-copy-hint">
@@ -376,11 +291,7 @@ body::before{content:'';position:fixed;inset:0;
           <span data-pl="Kopiuj Discord ID" data-en="Copy Discord ID">Kopiuj Discord ID</span>
         </button>
       </div>
-
-      <!-- ── RIGHT column ── -->
       <div class="flex flex-col gap-4">
-
-        <!-- FiveM card -->
         <div class="card p-5">
           <div class="skill-icon bg-red-50"><i class="fa-solid fa-code text-red-500"></i></div>
           <h3 class="font-bold text-sm text-slate-900 mb-1.5"
@@ -398,8 +309,6 @@ body::before{content:'';position:fixed;inset:0;
             <span class="text-xs bg-red-50 text-red-700 border border-red-100 rounded-full px-2.5 py-0.5 font-mono font-medium">FiveM</span>
           </div>
         </div>
-
-        <!-- Backend card -->
         <div class="card p-5">
           <div class="skill-icon bg-emerald-50"><i class="fa-solid fa-server text-emerald-600"></i></div>
           <h3 class="font-bold text-sm text-slate-900 mb-1.5"
@@ -417,10 +326,8 @@ body::before{content:'';position:fixed;inset:0;
             <span class="text-xs bg-emerald-50 text-emerald-700 border border-emerald-100 rounded-full px-2.5 py-0.5 font-mono font-medium">MySQL</span>
           </div>
         </div>
-
-        <!-- Resmon badge -->
         <div class="bg-slate-950 rounded-2xl p-5">
-          <p class="font-mono text-xs text-slate-500 mb-2">// performance target</p>
+          <p class="font-mono text-xs text-slate-500 mb-2">
           <p class="font-black text-xl text-white mb-1 tracking-tight">
             resmon &lt; <span class="text-blue-400">0.01ms</span>
           </p>
@@ -431,12 +338,9 @@ body::before{content:'';position:fixed;inset:0;
           </p>
         </div>
       </div>
-
-    </div><!-- /grid -->
+    </div>
   </div>
 </section>
-
-<!-- ████ TECH STACK ████ -->
 <section class="py-16 px-4 sm:px-6 lg:px-10" id="services">
   <div class="max-w-5xl mx-auto">
     <div class="text-center mb-8 reveal">
@@ -473,10 +377,6 @@ body::before{content:'';position:fixed;inset:0;
     </div>
   </div>
 </section>
-
-
-
-<!-- ████ CONTACT ████ -->
 <section class="py-20 px-4 sm:px-6 lg:px-10" id="contact">
   <div class="max-w-xl mx-auto text-center reveal">
     <p class="slabel mb-3" data-pl="KONTAKT" data-en="CONTACT">KONTAKT</p>
@@ -489,7 +389,6 @@ body::before{content:'';position:fixed;inset:0;
        data-en="Tell me what you need — I'll respond within 24h via Discord or email.">
       Opisz co potrzebujesz — odezwę się w ciągu 24&nbsp;h przez Discord lub e-mail.
     </p>
-
     <div class="flex flex-col sm:flex-row gap-3 justify-center mb-7">
       <button onclick="openDiscord()"
         class="flex items-center justify-center gap-2.5 bg-indigo-600 hover:bg-indigo-700
@@ -506,8 +405,6 @@ body::before{content:'';position:fixed;inset:0;
         vexodevtech@gmail.com
       </a>
     </div>
-
-    <!-- Discord ID widget -->
     <div class="inline-flex items-center gap-2 bg-slate-50 border border-slate-200
                 rounded-2xl px-4 py-3 group">
       <i class="fa-brands fa-discord text-indigo-500"></i>
@@ -520,8 +417,6 @@ body::before{content:'';position:fixed;inset:0;
     </div>
   </div>
 </section>
-
-<!-- ████ FOOTER ████ -->
 <footer class="border-t border-slate-100 bg-white">
   <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-10 py-7
               flex flex-col sm:flex-row items-center justify-between gap-3">
@@ -539,8 +434,6 @@ body::before{content:'';position:fixed;inset:0;
     </div>
   </div>
 </footer>
-
-<!-- ████ FLOAT WIDGET ████ -->
 <div class="float-widget">
   <div class="float-bubble" id="fbubble">
     <div class="flex items-start gap-3 mb-3">
@@ -568,10 +461,7 @@ body::before{content:'';position:fixed;inset:0;
     <i class="fa-solid fa-comment-dots" id="fico"></i>
   </button>
 </div>
-
-<!-- ████ SCRIPTS ████ -->
 <script>
-// ── Menu ──────────────────────────────────────────
 const mm = document.getElementById('mmenu');
 const hi = document.getElementById('hico');
 function toggleMenu(){
@@ -582,8 +472,6 @@ function closeMenu(){
   mm.classList.remove('open');
   hi.className = 'fa-solid fa-bars text-sm';
 }
-
-// ── Discord ───────────────────────────────────────
 const DID = '954471192096555048';
 function openDiscord(){
   window.open('discord://users/'+DID,'_blank');
@@ -600,24 +488,18 @@ function copyDiscord(){
     ? navigator.clipboard.writeText(DID).then(()=>showToast('ID skopiowane!')).catch(cb)
     : cb();
 }
-
-// ── Toast ─────────────────────────────────────────
 function showToast(msg){
   const t=document.getElementById('toast');
   t.textContent=msg; t.classList.add('show');
   clearTimeout(t._tid);
   t._tid=setTimeout(()=>t.classList.remove('show'),2200);
 }
-
-// ── Float widget ──────────────────────────────────
 let wOpen=false;
 function toggleWidget(){
   wOpen=!wOpen;
   document.getElementById('fbubble').classList.toggle('open',wOpen);
   document.getElementById('fico').className=wOpen?'fa-solid fa-xmark':'fa-solid fa-comment-dots';
 }
-
-// ── Language toggle ───────────────────────────────
 function setLang(l){
   document.getElementById('lpl').classList.toggle('on',l==='pl');
   document.getElementById('len').classList.toggle('on',l==='en');
@@ -626,20 +508,14 @@ function setLang(l){
     if(v!==null) el.innerHTML=v;
   });
 }
-
-// ── Scroll reveal ─────────────────────────────────
 const ro=new IntersectionObserver(e=>{
   e.forEach(x=>{if(x.isIntersecting){x.target.classList.add('in');ro.unobserve(x.target);}});
 },{threshold:.08,rootMargin:'0px 0px -24px 0px'});
 document.querySelectorAll('.reveal').forEach(el=>ro.observe(el));
-
-// ── Navbar scroll shadow ──────────────────────────
 const nb=document.getElementById('navbar');
 window.addEventListener('scroll',()=>{
   nb.classList.toggle('scrolled',window.scrollY>10);
 },{ passive:true });
-
-// ── Active nav link ───────────────────────────────
 const secs=[...document.querySelectorAll('section[id]')];
 const nls =[...document.querySelectorAll('.nav-link')];
 const so=new IntersectionObserver(e=>{
@@ -653,72 +529,54 @@ const so=new IntersectionObserver(e=>{
   });
 },{threshold:.45});
 secs.forEach(s=>so.observe(s));
-
-// ── Discord Presence via Lanyard API ──────────────
 (function(){
   const UID        = '954471192096555048';
   const FALLBACK   = 'https://dcdn.dstn.to/avatars/' + UID + '?size=256';
   const avatarEl   = document.getElementById('lanyard-avatar');
   const dotEl      = document.getElementById('lanyard-dot');
-
-  // Kolor kropki statusu
   const statusColor = {
-    online:  '#22c55e',   // zielony
-    idle:    '#f59e0b',   // pomarańczowy
-    dnd:     '#ef4444',   // czerwony
-    offline: '#6b7280',   // szary
+    online:  '#22c55e',   
+    idle:    '#f59e0b',   
+    dnd:     '#ef4444',   
+    offline: '#6b7280',   
   };
   const statusLabel = {
     online: 'Online', idle: 'Idle', dnd: 'Nie przeszkadzać', offline: 'Offline',
   };
-
   function applyStatus(s) {
     const color = statusColor[s] || statusColor.offline;
     dotEl.style.background = color;
     dotEl.title = statusLabel[s] || 'Offline';
-    dotEl.className = 'presence-dot'; // reset klas, kolor przez style
+    dotEl.className = 'presence-dot'; 
   }
-
-  // ── 1. REST fetch Lanyard ──
   try {
     fetch('https://api.lanyard.rest/v1/users/' + UID)
       .then(r => r.json())
       .then(json => {
         if (!json.success) throw new Error('Lanyard: no data');
-
         const data   = json.data;
         const user   = data.discord_user;
         const hash   = user && user.avatar;
-
-        // 2. Buduj URL z hasha avatara
         if (hash) {
           const ext = hash.startsWith('a_') ? 'gif' : 'png';
           const url = 'https://cdn.discordapp.com/avatars/' + UID + '/' + hash + '.' + ext + '?size=256';
-          // 3. Podmień src img
           avatarEl.src = url;
         }
-
-        // 5. Ustaw status (opcjonalnie)
         applyStatus(data.discord_status || 'offline');
       })
       .catch(() => {
-        // Obsługa błędu — fallback avatar
         avatarEl.src = FALLBACK;
       });
   } catch(e) {
     avatarEl.src = FALLBACK;
   }
-
-  // ── WebSocket — live aktualizacje statusu ──
   try {
     const ws = new WebSocket('wss://api.lanyard.rest/socket');
     ws.onmessage = e => {
       const msg = JSON.parse(e.data);
-      // Handshake: op 1 = hello → odpowiedz op 2 = subscribe
       if (msg.op === 1) {
         ws.send(JSON.stringify({ op: 2, d: { subscribe_to_id: UID } }));
       }
-      // op 0 = event (PRESENCE_UPDATE)
       if (msg.op === 0 && msg.d && msg.d.discord_status) {
         applyStatus(msg.d.discord_status);
       }
@@ -726,6 +584,14 @@ secs.forEach(s=>so.observe(s));
     ws.onerror = () => {};
   } catch(e) {}
 })();
+document.addEventListener('contextmenu', event => event.preventDefault());
+document.onkeydown = function(e) {
+    if(e.keyCode == 123) { return false; }
+    if(e.ctrlKey && e.shiftKey && e.keyCode == 73) { return false; }
+    if(e.ctrlKey && e.shiftKey && e.keyCode == 67) { return false; }
+    if(e.ctrlKey && e.shiftKey && e.keyCode == 74) { return false; }
+    if(e.ctrlKey && e.keyCode == 85) { return false; }
+};
 </script>
 </body>
 </html>
