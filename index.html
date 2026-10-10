@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>VEXO.DEV — Full Stack &amp; Web Developer</title>
-<meta name="description" content="Ksawier (Vexo) — Full Stack Developer. FiveM Lua, webaplikacje i systemy dla biznesu i gamingu."/>
-<meta property="og:title" content="VEXO.DEV — Full Stack Developer"/>
-<meta property="og:description" content="FiveM Lua scripting, web applications, and backend systems."/>
+<title>vex$ | VEXOTECH.PL</title>
+<meta name="description" content="Hej! Programuję w Lua od dwóch lat, buduję nowoczesne strony oraz boty na Discorda."/>
+<meta property="og:title" content="vex$ - Lua & Web Developer"/>
+<meta property="og:description" content="Skrypty FiveM, aplikacje webowe i boty Discord."/>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%232563eb'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='central' text-anchor='middle' font-family='monospace' font-weight='900' font-size='16' fill='white'%3EV%3C/text%3E%3C/svg%3E"/>
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
@@ -142,16 +142,10 @@ body::before{content:'';position:fixed;inset:0;
           <rect width="28" height="28" rx="7" fill="#2563eb"/>
           <text x="14" y="19" text-anchor="middle" font-family="monospace" font-weight="900" font-size="14" fill="white">V</text>
         </svg>
-        <span class="font-mono font-black text-sm tracking-widest text-slate-900 group-hover:text-cobalt transition-colors">VEXO<span class="text-cobalt">.</span>DEV</span>
-        <span class="hidden sm:flex items-center gap-1.5 bg-green-50 border border-green-200 rounded-full px-2.5 py-0.5">
-          <span class="pulse"></span>
-          <span class="text-green-700 text-xs font-semibold" data-pl="Dostępny" data-en="Available">Dostępny</span>
-        </span>
+        <span class="font-mono font-black text-sm tracking-widest text-slate-900 group-hover:text-cobalt transition-colors">VEXOTECH<span class="text-cobalt">.</span>PL</span>
       </a>
       <div class="hidden md:flex items-center gap-8">
         <a href="#about"    class="nav-link" id="nl-about"    data-pl="O&nbsp;mnie"  data-en="About">O&nbsp;mnie</a>
-        <a href="#services" class="nav-link" id="nl-services" data-pl="Usługi"  data-en="Services">Usługi</a>
-        <a href="#process"  class="nav-link" id="nl-process"  data-pl="Proces"  data-en="Process">Proces</a>
         <a href="#contact"  class="nav-link" id="nl-contact"  data-pl="Kontakt" data-en="Contact">Kontakt</a>
       </div>
       <div class="hidden md:flex items-center gap-3">
@@ -159,7 +153,7 @@ body::before{content:'';position:fixed;inset:0;
           <button class="lang-btn on" id="lpl" onclick="setLang('pl')">PL</button>
           <button class="lang-btn"    id="len" onclick="setLang('en')">EN</button>
         </div>
-        <a href="#contact" class="hire-btn" data-pl="Zatrudnij mnie" data-en="Hire me">Zatrudnij mnie</a>
+        <a href="#contact" class="hire-btn" data-pl="Napisz na Discord" data-en="Message on Discord">Napisz na Discord</a>
       </div>
       <button class="md:hidden p-2 rounded-xl border border-slate-200 text-slate-600 hover:border-cobalt transition-colors"
               onclick="toggleMenu()" id="hbtn" aria-label="Menu">
@@ -168,8 +162,6 @@ body::before{content:'';position:fixed;inset:0;
     </div>
     <div id="mmenu">
       <a href="#about"    class="mlink" onclick="closeMenu()" data-pl="O&nbsp;mnie"  data-en="About">O&nbsp;mnie</a>
-      <a href="#services" class="mlink" onclick="closeMenu()" data-pl="Usługi"  data-en="Services">Usługi</a>
-      <a href="#process"  class="mlink" onclick="closeMenu()" data-pl="Proces"  data-en="Process">Proces</a>
       <a href="#contact"  class="mlink" onclick="closeMenu()" data-pl="Kontakt" data-en="Contact">Kontakt</a>
       <div class="flex items-center gap-3 pt-3">
         <div class="lang-wrap">
@@ -177,75 +169,58 @@ body::before{content:'';position:fixed;inset:0;
           <button class="lang-btn"    onclick="setLang('en');closeMenu()">EN</button>
         </div>
         <a href="#contact" class="hire-btn ml-auto" onclick="closeMenu()"
-           data-pl="Zatrudnij mnie" data-en="Hire me">Zatrudnij mnie</a>
+           data-pl="Napisz na Discord" data-en="Message on Discord">Napisz na Discord</a>
       </div>
     </div>
   </div>
 </nav>
-<section class="relative pt-28 pb-4 px-4 sm:px-6 lg:px-10" id="about">
+<section class="relative pt-32 pb-4 px-4 sm:px-6 lg:px-10" id="about">
   <div class="max-w-6xl mx-auto">
-    <div class="flex justify-center mb-7 reveal">
-      <span class="badge"><span class="pulse"></span>
-        <span data-pl="Dostępny na nowe projekty" data-en="Available for new projects">Dostępny na nowe projekty</span>
-      </span>
-    </div>
     <div class="text-center reveal" style="transition-delay:.06s">
       <h1 class="hero-h mb-4">
-        VEXO<span class="text-cobalt">.</span>DEV&thinsp;—&thinsp;<span class="text-cobalt">FULL&nbsp;STACK</span>&nbsp;&amp;&nbsp;WEB&nbsp;DEVELOPER
+        vex<span class="text-cobalt">$</span>
       </h1>
       <p class="text-slate-500 text-base sm:text-lg max-w-lg mx-auto leading-relaxed mb-12"
-         data-pl="Koduję wydajne systemy w FiveM Lua i buduję schludne aplikacje oraz strony webowe dla biznesu i gamingu."
-         data-en="I build high-performance FiveM Lua systems and clean web applications for business and gaming.">
-        Koduję wydajne systemy w FiveM Lua i buduję schludne aplikacje oraz strony webowe dla biznesu i gamingu.
+         data-pl="Hej! Programuję w Lua od dwóch lat, buduję nowoczesne strony i tworzę fajne boty na Discorda."
+         data-en="Hey! I have been programming in Lua for two years, building modern websites and cool Discord bots.">
+        Hej! Programuję w Lua od dwóch lat, buduję nowoczesne strony i tworzę fajne boty na Discorda.
       </p>
     </div>
-    <div class="grid grid-cols-1 lg:grid-cols-[1fr_300px_1fr] gap-4 items-start reveal" style="transition-delay:.12s">
-      <div class="flex flex-col gap-4">
-        <div class="card p-5">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[1fr_300px_1fr] gap-6 lg:gap-4 items-start reveal" style="transition-delay:.12s">
+      <div class="flex flex-col gap-4 order-2 lg:order-1 md:col-span-1">
+        <div class="card p-5 h-full">
           <div class="skill-icon bg-blue-50"><i class="fa-solid fa-globe text-cobalt"></i></div>
           <h3 class="font-bold text-sm text-slate-900 mb-1.5"
-              data-pl="Projektowanie i Budowa Stron WWW" data-en="Web Design &amp; Development">
-            Projektowanie i Budowa Stron WWW
+              data-pl="Nowoczesne Strony WWW" data-en="Modern Web Development">
+            Nowoczesne Strony WWW
           </h3>
           <p class="text-xs text-slate-500 leading-relaxed mb-3"
-             data-pl="Responsywne interfejsy, CMSy, optymalizacja SEO, integracje API."
-             data-en="Responsive interfaces, CMSs, SEO optimization, API integrations.">
-            Responsywne interfejsy, CMSy, optymalizacja SEO, integracje API.
+             data-pl="Responsywne i szybkie interfejsy, które dobrze wyglądają na każdym urządzeniu."
+             data-en="Responsive and fast interfaces that look good on any device.">
+            Responsywne i szybkie interfejsy, które dobrze wyglądają na każdym urządzeniu.
           </p>
-          <div class="flex flex-wrap gap-1.5">
+          <div class="flex flex-wrap gap-1.5 mt-auto pt-2">
             <span class="text-xs bg-blue-50 text-blue-700 border border-blue-100 rounded-full px-2.5 py-0.5 font-mono font-medium">React</span>
             <span class="text-xs bg-blue-50 text-blue-700 border border-blue-100 rounded-full px-2.5 py-0.5 font-mono font-medium">Tailwind</span>
             <span class="text-xs bg-blue-50 text-blue-700 border border-blue-100 rounded-full px-2.5 py-0.5 font-mono font-medium">Next.js</span>
           </div>
         </div>
-        <div class="card p-5">
+        <div class="card p-5 h-full">
           <div class="skill-icon bg-violet-50"><i class="fa-solid fa-box-open text-violet-600"></i></div>
-          <h3 class="font-bold text-sm text-slate-900 mb-1.5">ox_inventory / ox_lib</h3>
+          <h3 class="font-bold text-sm text-slate-900 mb-1.5">Skrypty i mechaniki FiveM</h3>
           <p class="text-xs text-slate-500 leading-relaxed mb-3"
-             data-pl="Integracja przedmiotów, callbacks, zaawansowane skrypty użytkowe."
-             data-en="Item integration, callbacks, advanced utility scripts.">
-            Integracja przedmiotów, callbacks, zaawansowane skrypty użytkowe.
+             data-pl="Zaawansowana integracja, optymalizacja pod 0.00ms i systemy szyte na miarę."
+             data-en="Advanced integration, 0.00ms optimization and tailor-made systems.">
+            Zaawansowana integracja, optymalizacja pod 0.00ms i systemy szyte na miarę.
           </p>
-          <div class="flex flex-wrap gap-1.5">
+          <div class="flex flex-wrap gap-1.5 mt-auto pt-2">
             <span class="text-xs bg-violet-50 text-violet-700 border border-violet-100 rounded-full px-2.5 py-0.5 font-mono font-medium">Lua</span>
             <span class="text-xs bg-violet-50 text-violet-700 border border-violet-100 rounded-full px-2.5 py-0.5 font-mono font-medium">ox_lib</span>
             <span class="text-xs bg-violet-50 text-violet-700 border border-violet-100 rounded-full px-2.5 py-0.5 font-mono font-medium">ESX</span>
           </div>
         </div>
-        <div class="grid grid-cols-2 gap-3">
-          <div class="card p-4 text-center">
-            <div class="text-3xl font-black text-cobalt tracking-tight">3+</div>
-            <div class="text-xs text-slate-500 font-medium mt-1"
-                 data-pl="Lata w branży" data-en="Years in dev">Lata w branży</div>
-          </div>
-          <div class="card p-4 text-center">
-            <div class="text-3xl font-black text-cobalt tracking-tight">20+</div>
-            <div class="text-xs text-slate-500 font-medium mt-1"
-                 data-pl="Projektów" data-en="Projects done">Projektów</div>
-          </div>
-        </div>
       </div>
-      <div class="bio-card p-6 flex flex-col items-center gap-4 w-full">
+      <div class="bio-card p-6 flex flex-col items-center gap-4 w-full order-1 lg:order-2 md:col-span-2 lg:col-span-1 max-w-sm mx-auto lg:max-w-none">
         <div class="avatar-container">
           <div class="avatar-wrap">
             <img id="lanyard-avatar"
@@ -283,7 +258,7 @@ body::before{content:'';position:fixed;inset:0;
           </a>
         </div>
         <a href="#contact" class="hire-btn w-full text-center text-sm py-2.5"
-           data-pl="Zatrudnij mnie" data-en="Hire me">Zatrudnij mnie</a>
+           data-pl="Napisz na Discord" data-en="Message on Discord">Napisz na Discord</a>
         <button onclick="copyDiscord()"
           class="flex items-center gap-1.5 text-xs text-slate-400 hover:text-cobalt transition-colors font-mono"
           id="btn-copy-hint">
@@ -291,51 +266,40 @@ body::before{content:'';position:fixed;inset:0;
           <span data-pl="Kopiuj Discord ID" data-en="Copy Discord ID">Kopiuj Discord ID</span>
         </button>
       </div>
-      <div class="flex flex-col gap-4">
-        <div class="card p-5">
+      <div class="flex flex-col gap-4 order-3 lg:order-3 md:col-span-1">
+        <div class="card p-5 h-full">
           <div class="skill-icon bg-red-50"><i class="fa-solid fa-code text-red-500"></i></div>
           <h3 class="font-bold text-sm text-slate-900 mb-1.5"
-              data-pl="Skrypty FiveM / Lua" data-en="FiveM / Lua Scripts">
-            Skrypty FiveM / Lua
+              data-pl="Pisanie w Lua" data-en="Lua Scripting">
+            Pisanie w Lua
           </h3>
           <p class="text-xs text-slate-500 leading-relaxed mb-3"
-             data-pl="Systemy gameplay'owe, NUI, optymalizacja resmon, zaawansowane eventy."
-             data-en="Gameplay systems, NUI, resmon optimization, advanced events.">
-            Systemy gameplay'owe, NUI, optymalizacja resmon, zaawansowane eventy.
+             data-pl="Wydajne systemy rozrywki, schludne NUI i dbanie o to, by serwer chodził płynnie."
+             data-en="Efficient gameplay systems, clean NUI and ensuring smooth server performance.">
+            Wydajne systemy rozrywki, schludne NUI i dbanie o to, by serwer chodził płynnie.
           </p>
-          <div class="flex flex-wrap gap-1.5">
+          <div class="flex flex-wrap gap-1.5 mt-auto pt-2">
             <span class="text-xs bg-red-50 text-red-700 border border-red-100 rounded-full px-2.5 py-0.5 font-mono font-medium">Lua 5.4</span>
             <span class="text-xs bg-red-50 text-red-700 border border-red-100 rounded-full px-2.5 py-0.5 font-mono font-medium">NUI</span>
             <span class="text-xs bg-red-50 text-red-700 border border-red-100 rounded-full px-2.5 py-0.5 font-mono font-medium">FiveM</span>
           </div>
         </div>
-        <div class="card p-5">
+        <div class="card p-5 h-full">
           <div class="skill-icon bg-emerald-50"><i class="fa-solid fa-server text-emerald-600"></i></div>
           <h3 class="font-bold text-sm text-slate-900 mb-1.5"
-              data-pl="Panele &amp; Backendy" data-en="Panels &amp; Backends">
-            Panele &amp; Backendy
+              data-pl="Backend i Panele" data-en="Backend & Panels">
+            Backend i Panele
           </h3>
           <p class="text-xs text-slate-500 leading-relaxed mb-3"
-             data-pl="Dashboard admina, WebSocket real-time, REST API, MySQL — produkcyjne."
-             data-en="Admin dashboard, WebSocket real-time, REST API, MySQL — production ready.">
-            Dashboard admina, WebSocket real-time, REST API, MySQL — produkcyjne.
+             data-pl="Real-time web sockety, REST API i bazy danych gotowe na obciążenie graczy."
+             data-en="Real-time web sockets, REST API and databases ready for player load.">
+            Real-time web sockety, REST API i bazy danych gotowe na obciążenie graczy.
           </p>
-          <div class="flex flex-wrap gap-1.5">
+          <div class="flex flex-wrap gap-1.5 mt-auto pt-2">
             <span class="text-xs bg-emerald-50 text-emerald-700 border border-emerald-100 rounded-full px-2.5 py-0.5 font-mono font-medium">Node.js</span>
             <span class="text-xs bg-emerald-50 text-emerald-700 border border-emerald-100 rounded-full px-2.5 py-0.5 font-mono font-medium">Express</span>
             <span class="text-xs bg-emerald-50 text-emerald-700 border border-emerald-100 rounded-full px-2.5 py-0.5 font-mono font-medium">MySQL</span>
           </div>
-        </div>
-        <div class="bg-slate-950 rounded-2xl p-5">
-          <p class="font-mono text-xs text-slate-500 mb-2">
-          <p class="font-black text-xl text-white mb-1 tracking-tight">
-            resmon &lt; <span class="text-blue-400">0.01ms</span>
-          </p>
-          <p class="text-xs text-slate-400 leading-relaxed"
-             data-pl="Priorytet: czytelny kod i produkcyjna wydajność."
-             data-en="Priority: clean code and production performance.">
-            Priorytet: czytelny kod i produkcyjna wydajność.
-          </p>
         </div>
       </div>
     </div>
@@ -344,32 +308,38 @@ body::before{content:'';position:fixed;inset:0;
 <section class="py-16 px-4 sm:px-6 lg:px-10" id="services">
   <div class="max-w-5xl mx-auto">
     <div class="text-center mb-8 reveal">
-      <p class="slabel mb-3" data-pl="TECHNOLOGIE, KTÓRYCH UŻYWAM" data-en="TECHNOLOGIES I USE">
-        TECHNOLOGIE, KTÓRYCH UŻYWAM
+      <p class="slabel mb-3" data-pl="TECHNOLOGIE, KTÓRYCH UŻYWAM NA CO DZIEŃ" data-en="TECHNOLOGIES I USE DAILY">
+        TECHNOLOGIE, KTÓRYCH UŻYWAM NA CO DZIEŃ
       </p>
       <div class="h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent"></div>
     </div>
     <div class="flex flex-wrap justify-center gap-3 reveal" style="transition-delay:.07s">
       <div class="tc"><div class="tc-i">🌙</div><div class="tc-l">Lua</div></div>
       <div class="tc">
-        <div class="tc-i"><i class="fa-solid fa-database text-cobalt" style="font-size:1.2rem"></i></div>
-        <div class="tc-l">oxmysql</div>
-      </div>
-      <div class="tc"><div class="tc-i">🎮</div><div class="tc-l">ESX</div></div>
-      <div class="tc"><div class="tc-i">⚡</div><div class="tc-l">QBCore</div></div>
-      <div class="tc"><div class="tc-i">📦</div><div class="tc-l">ox_lib</div></div>
-      <div class="tc"><div class="tc-i">🗃️</div><div class="tc-l">ox_inventory</div></div>
-      <div class="tc">
         <div class="tc-i"><i class="fa-brands fa-node-js text-green-600" style="font-size:1.3rem"></i></div>
         <div class="tc-l">Node.js</div>
       </div>
-      <div class="tc"><div class="tc-i">🚂</div><div class="tc-l">Express</div></div>
+      <div class="tc">
+        <div class="tc-i">🤖</div>
+        <div class="tc-l">Discord.js</div>
+      </div>
       <div class="tc">
         <div class="tc-i"><i class="fa-brands fa-react text-cyan-500" style="font-size:1.3rem"></i></div>
         <div class="tc-l">React</div>
       </div>
+      <div class="tc">
+        <div class="tc-i">▲</div>
+        <div class="tc-l">Next.js</div>
+      </div>
+      <div class="tc">
+        <div class="tc-i"><span class="text-blue-500 font-bold">TS</span></div>
+        <div class="tc-l">TypeScript</div>
+      </div>
       <div class="tc"><div class="tc-i">🎨</div><div class="tc-l">Tailwind</div></div>
-      <div class="tc"><div class="tc-i">🔌</div><div class="tc-l">WebSocket</div></div>
+      <div class="tc">
+        <div class="tc-i"><i class="fa-brands fa-python text-yellow-500" style="font-size:1.3rem"></i></div>
+        <div class="tc-l">Python</div>
+      </div>
       <div class="tc">
         <div class="tc-i"><i class="fa-solid fa-server text-orange-500" style="font-size:1.1rem"></i></div>
         <div class="tc-l">MySQL</div>
@@ -381,13 +351,13 @@ body::before{content:'';position:fixed;inset:0;
   <div class="max-w-xl mx-auto text-center reveal">
     <p class="slabel mb-3" data-pl="KONTAKT" data-en="CONTACT">KONTAKT</p>
     <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight mb-3"
-        data-pl="Masz projekt? Porozmawiajmy." data-en="Got a project? Let's talk.">
-      Masz projekt? Porozmawiajmy.
+        data-pl="Masz ciekawy projekt? Pogadajmy." data-en="Got an interesting project? Let's chat.">
+      Masz ciekawy projekt? Pogadajmy.
     </h2>
     <p class="text-slate-500 text-sm leading-relaxed mb-9"
-       data-pl="Opisz co potrzebujesz — odezwę się w ciągu 24&nbsp;h przez Discord lub e-mail."
-       data-en="Tell me what you need — I'll respond within 24h via Discord or email.">
-      Opisz co potrzebujesz — odezwę się w ciągu 24&nbsp;h przez Discord lub e-mail.
+       data-pl="Napisz, czego potrzebujesz na maila lub Discorda — postaram się odpowiedzieć w max 24h."
+       data-en="Write what you need via email or Discord — I will try to answer within 24h.">
+      Napisz, czego potrzebujesz na maila lub Discorda — postaram się odpowiedzieć w max 24h.
     </p>
     <div class="flex flex-col sm:flex-row gap-3 justify-center mb-7">
       <button onclick="openDiscord()"
@@ -421,7 +391,7 @@ body::before{content:'';position:fixed;inset:0;
   <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-10 py-7
               flex flex-col sm:flex-row items-center justify-between gap-3">
     <span class="font-mono font-black text-sm text-slate-900">
-      VEXO<span class="text-cobalt">.</span>DEV
+      VEXOTECH<span class="text-cobalt">.</span>PL
     </span>
     <span class="font-mono text-xs text-slate-400"
           data-pl="© 2026 — Wszystkie Prawa Zastrzeżone"
@@ -444,9 +414,9 @@ body::before{content:'';position:fixed;inset:0;
         <p class="font-bold text-xs text-slate-900 mb-0.5"
            data-pl="Skontaktuj się" data-en="Get in touch">Skontaktuj się</p>
         <p class="text-xs text-slate-500 leading-relaxed"
-           data-pl="Porozmawiajmy o Twojej stronie, bazie danych lub skryptach FiveM."
-           data-en="Let's talk about your website, database or FiveM scripts.">
-          Porozmawiajmy o Twojej stronie, bazie danych lub skryptach FiveM.
+           data-pl="Masz pytania o boty, skrypty albo stronę? Śmiało!"
+           data-en="Got questions about bots, scripts or a website? Go ahead!">
+          Masz pytania o boty, skrypty albo stronę? Śmiało!
         </p>
       </div>
     </div>
@@ -454,7 +424,7 @@ body::before{content:'';position:fixed;inset:0;
       class="w-full bg-slate-900 hover:bg-cobalt text-white text-xs font-bold
              py-2.5 px-4 rounded-xl transition-colors flex items-center justify-center gap-2">
       <i class="fa-brands fa-discord"></i>
-      <span data-pl="Wyślij wiadomość" data-en="Send message">Wyślij wiadomość</span>
+      <span data-pl="Napisz do mnie" data-en="Send message">Napisz do mnie</span>
     </button>
   </div>
   <button class="ftoggle" id="ftoggle" onclick="toggleWidget()" aria-label="Kontakt">
@@ -541,7 +511,7 @@ secs.forEach(s=>so.observe(s));
     offline: '#6b7280',   
   };
   const statusLabel = {
-    online: 'Online', idle: 'Idle', dnd: 'Nie przeszkadzać', offline: 'Offline',
+    online: 'Online', idle: 'Zaraz wracam', dnd: 'Nie przeszkadzać', offline: 'Offline',
   };
   function applyStatus(s) {
     const color = statusColor[s] || statusColor.offline;
