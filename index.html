@@ -93,21 +93,8 @@ body::before{content:'';position:fixed;inset:0;
   font-size:.9rem;flex-shrink:0;transition:border-color .2s}
 .bio-tile:hover .tile-icon{border-color:#374151}
 
-.rpc-tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;background:#050505;border:1px solid #1f2937;padding:4px;border-radius:14px;width:100%}
-.rpc-tab{display:flex;align-items:center;justify-content:center;gap:6px;padding:7px 10px;
-  border-radius:10px;font-size:.72rem;font-weight:600;color:#9ca3af;background:transparent;
-  border:none;cursor:pointer;transition:all .2s;position:relative}
-.rpc-tab:hover{color:#fff}
-.rpc-tab.active{background:#111827;color:#fff;box-shadow:0 1px 4px rgba(0,0,0,.5)}
-.rpc-tab-dot{width:6px;height:6px;border-radius:50%;display:none}
-.rpc-tab-dot.show{display:inline-block}
-
-.rpc-panel{width:100%;background:#111827;border:1px solid #1f2937;border-radius:16px;padding:12px;
-  min-height:84px;display:none;flex-direction:column;justify-content:center;transition:all .2s}
-.rpc-panel.active{display:flex}
-
-.rpc-cover{width:48px;height:48px;border-radius:11px;object-fit:cover;flex-shrink:0;
-  border:1px solid rgba(255,255,255,.08);background:#1f2937}
+.spotify-panel{width:100%;background:#111827;border:1px solid #1f2937;border-radius:16px;padding:12px;display:flex;flex-direction:column;justify-content:center}
+.rpc-cover{width:48px;height:48px;border-radius:11px;object-fit:cover;flex-shrink:0;border:1px solid rgba(255,255,255,.08);background:#1f2937}
 
 .eq-bars{display:inline-flex;align-items:flex-end;gap:2px;height:11px;margin-left:4px}
 .eq-bar{width:2.5px;background:#1db954;border-radius:2px;animation:eq-bounce 1s ease-in-out infinite}
@@ -192,7 +179,7 @@ body::before{content:'';position:fixed;inset:0;
     <div id="mmenu">
       <a href="#about"    class="mlink" onclick="closeMenu()" data-pl="O&nbsp;mnie"  data-en="About">O&nbsp;mnie</a>
       <a href="#services" class="mlink" onclick="closeMenu()" data-pl="Stack"       data-en="Stack">Stack</a>
-      <a href="#contact"  class="mlink" onclick="closeMenu()" data-pl="Kontakt" data-en="Contact">Kontakt</a>
+      <a href="#contact"  class="mlink" onclick="closeMenu()" data-pl="Kontakt" data-en="Kontakt">Kontakt</a>
       <div class="flex items-center gap-3 pt-3">
         <div class="lang-wrap">
           <button class="lang-btn on" onclick="setLang('pl');closeMenu()">PL</button>
@@ -270,7 +257,7 @@ body::before{content:'';position:fixed;inset:0;
           </p>
         </div>
 
-        <!-- SPOTIFY WIDGET (BEZ NAPISU API LIVE) -->
+        <!-- SPOTIFY API WIDGET -->
         <div class="w-full flex flex-col gap-2 pt-1">
           <div class="spotify-panel" id="spotify-panel">
             <div id="spotify-content" class="flex flex-col justify-center">
@@ -279,8 +266,8 @@ body::before{content:'';position:fixed;inset:0;
                   <i class="fa-brands fa-spotify text-base"></i>
                 </div>
                 <div class="min-w-0 flex-1">
-                  <div class="text-xs font-bold text-gray-200 truncate">Spotify wstrzymane</div>
-                  <div class="text-[11px] text-gray-500 truncate">Nic teraz nie leci w tle</div>
+                  <div class="text-xs font-bold text-gray-200 truncate">Ładowanie Spotify API...</div>
+                  <div class="text-[11px] text-gray-500 truncate">Pobieranie utworu</div>
                 </div>
               </div>
             </div>
@@ -342,7 +329,7 @@ body::before{content:'';position:fixed;inset:0;
           <p class="text-xs text-gray-400 leading-relaxed mb-3"
              data-pl="Real-time web sockety, REST API i bazy danych gotowe na obciążenie graczy."
              data-en="Real-time web sockets, REST API and databases ready for player load.">
-            Real-time web sockety, REST API i bazy danych gotowe na obciążenie graczy.
+            Real-time web sockets, REST API and databases ready for player load.
           </p>
           <div class="flex flex-wrap gap-1.5 mt-auto pt-2">
             <span class="text-xs bg-[#111827] text-gray-300 border border-gray-800 rounded-full px-2.5 py-0.5 font-mono font-medium">Node.js</span>
@@ -495,7 +482,6 @@ function setLang(l){
     const v=el.getAttribute('data-'+l);
     if(v!==null) el.innerHTML=v;
   });
-  if(window._rerenderLanyard) window._rerenderLanyard();
 }
 const ro=new IntersectionObserver(e=>{
   e.forEach(x=>{if(x.isIntersecting){x.target.classList.add('in');ro.unobserve(x.target);}});
@@ -519,10 +505,9 @@ const so=new IntersectionObserver(e=>{
 },{threshold:.45});
 secs.forEach(s=>so.observe(s));
 
-// Integracja Discorda i Spotify
+// Skrypt: Discord Lanyard (awatar + status) oraz bezpośrednie Spotify API z autoryzacją
 (function(){
   const UID = '954471192096555048';
-  const FALLBACK = 'https://dcdn.dstn.to/avatars/' + UID + '?size=256';
   const avatarEl = document.getElementById('lanyard-avatar');
   const dotEl = document.getElementById('lanyard-dot');
   const spContentEl = document.getElementById('spotify-content');
@@ -545,79 +530,13 @@ secs.forEach(s=>so.observe(s));
     return `${mins}:${String(secs).padStart(2, '0')}`;
   }
 
-  let latestSp = null;
-
-  function renderSpotify(sp){
-    if(sp){
-      const artist = (sp.artist || '').replace(/; /g, ', ');
-      const start = sp.timestamps && sp.timestamps.start ? sp.timestamps.start : 0;
-      const end   = sp.timestamps && sp.timestamps.end ? sp.timestamps.end : 0;
-      const total = Math.max(1, end - start);
-      const curr  = Math.min(total, Math.max(0, Date.now() - start));
-      const pct   = Math.min(100, Math.max(0, (curr / total) * 100)).toFixed(1);
-      const trackUrl = sp.track_id ? `https://open.spotify.com/track/${sp.track_id}` : '#';
-
-      spContentEl.innerHTML = `
-        <div class="flex items-center gap-3">
-          <img src="${escapeHtml(sp.album_art_url)}" alt="Album" class="rpc-cover"/>
-          <div class="min-w-0 flex-1 text-left">
-            <div class="flex items-center gap-1">
-              <a href="${escapeHtml(trackUrl)}" target="_blank" rel="noopener"
-                 class="text-xs font-bold text-white hover:text-[#1db954] transition-colors truncate">
-                ${escapeHtml(sp.song)}
-              </a>
-              <div class="eq-bars flex-shrink-0" title="Gra teraz">
-                <span class="eq-bar"></span><span class="eq-bar"></span><span class="eq-bar"></span>
-              </div>
-            </div>
-            <div class="text-[11px] text-gray-400 truncate">${escapeHtml(artist)}</div>
-            <div class="sp-progress-bg">
-              <div class="sp-progress-fill" id="sp-bar" style="width:${pct}%"></div>
-            </div>
-            <div class="flex justify-between font-mono text-[9px] text-gray-500 mt-1">
-              <span id="sp-curr">${formatTime(curr)}</span>
-              <span id="sp-total">${formatTime(total)}</span>
-            </div>
-          </div>
-        </div>
-      `;
-    } else {
-      const noSpTitle = currentLang === 'pl' ? 'Spotify wstrzymane' : 'Spotify paused';
-      const noSpSub   = currentLang === 'pl' ? 'Nic teraz nie leci w tle' : 'Nothing playing right now';
-      spContentEl.innerHTML = `
-        <div class="flex items-center gap-3">
-          <div class="w-11 h-11 rounded-xl bg-[#111827] border border-gray-800 flex items-center justify-center text-gray-400 flex-shrink-0">
-            <i class="fa-brands fa-spotify text-base"></i>
-          </div>
-          <div class="min-w-0 flex-1 text-left">
-            <div class="text-xs font-bold text-gray-200 truncate">${noSpTitle}</div>
-            <div class="text-[11px] text-gray-500 truncate">${noSpSub}</div>
-          </div>
-        </div>
-      `;
-    }
-  }
-
-  setInterval(() => {
-    if(!latestSp || !latestSp.timestamps) return;
-    const start = latestSp.timestamps.start;
-    const end   = latestSp.timestamps.end;
-    const total = Math.max(1, end - start);
-    const curr  = Math.min(total, Math.max(0, Date.now() - start));
-    const pct   = Math.min(100, Math.max(0, (curr / total) * 100)).toFixed(1);
-    const barEl  = document.getElementById('sp-bar');
-    const currEl = document.getElementById('sp-curr');
-    if(barEl)  barEl.style.width = pct + '%';
-    if(currEl) currEl.textContent = formatTime(curr);
-  }, 1000);
-
-  function fetchData(){
+  // 1. Awatar i status z Discorda
+  function fetchDiscordStatus(){
     fetch('https://api.lanyard.rest/v1/users/' + UID)
       .then(r => r.json())
       .then(json => {
         if(json.success && json.data){
           const data = json.data;
-          
           const user = data.discord_user;
           if(user && user.avatar){
             const ext = user.avatar.startsWith('a_') ? 'gif' : 'png';
@@ -625,36 +544,122 @@ secs.forEach(s=>so.observe(s));
           }
           const st = data.discord_status || 'offline';
           dotEl.style.background = statusColor[st] || statusColor.offline;
-
-          const spotifyActivity = Array.isArray(data.activities) ? data.activities.find(a => a.id === 'spotify:1' || a.name === 'Spotify') : null;
-          const rawSp = data.spotify || spotifyActivity;
-          if(data.listening_to_spotify && rawSp){
-            latestSp = {
-              song: rawSp.song || rawSp.details,
-              artist: rawSp.artist || rawSp.state,
-              album_art_url: rawSp.album_art_url || (rawSp.assets && rawSp.assets.large_image ? `https://i.scdn.co/image/${rawSp.assets.large_image.replace('spotify:', '')}` : 'https://developer.spotify.com/assets/branding-guidelines/icon3x.png'),
-              track_id: rawSp.track_id || rawSp.sync_id,
-              timestamps: rawSp.timestamps
-            };
-          } else if(spotifyActivity){
-            latestSp = {
-              song: spotifyActivity.details,
-              artist: spotifyActivity.state,
-              album_art_url: spotifyActivity.assets && spotifyActivity.assets.large_image ? `https://i.scdn.co/image/${spotifyActivity.assets.large_image.replace('spotify:', '')}` : 'https://developer.spotify.com/assets/branding-guidelines/icon3x.png',
-              track_id: spotifyActivity.sync_id,
-              timestamps: spotifyActivity.timestamps
-            };
-          } else {
-            latestSp = null;
-          }
-          renderSpotify(latestSp);
         }
       })
       .catch(() => {});
   }
 
-  fetchData();
-  setInterval(fetchData, 8000);
+  // 2. Bezpośrednie Spotify Web API (Świeży Kod Autoryzacyjny wklejony poniżej)
+  const CLIENT_ID = 'f738375950f94b05b3b5a5a67576f080';
+  const CLIENT_SECRET = '441eb30552aa4954ad0a720d25c463e4';
+  const AUTH_CODE = 'AQDwOUj2eqXf39zwioGNuYqH_WnZmUJp_ALFwUaVY0s959UzjJr692lk02pXDjIsbKce5Hxv-X16t3xU8CG8MuQrD5DPGRytG8PH3ArsBqos4G7YxweUIwsRCNPpJ49RWPmkLnGXuTW_y2lJiQnxvv4a4-Vpz8-sSGRRCqrVrKRaQ1xTB-mAREs74mo9rscX014GQ-H35eWaUkEX9sXN042TZN8ooEZtfwvWJwSBIyV23C1LACnVgjoHorNWTvkVunSgwpdk5DHjknBFkYD3k_jfEDPZteUXGw';
+  const REDIRECT_URI = 'https://www.vexotech.pl';
+  let accessToken = null;
+  let currentProgress = 0;
+  let currentDuration = 0;
+  let isPlaying = false;
+
+  async function initSpotify(){
+    try {
+      const response = await fetch('https://accounts.spotify.com/api/token', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({
+          grant_type: 'authorization_code',
+          code: AUTH_CODE,
+          redirect_uri: REDIRECT_URI,
+          client_id: CLIENT_ID,
+          client_secret: CLIENT_SECRET
+        })
+      });
+      const data = await response.json();
+      if(data.access_token){
+        accessToken = data.access_token;
+        fetchCurrentlyPlaying();
+        setInterval(fetchCurrentlyPlaying, 3000); // Odpytanie Spotify API co 3 sekundy
+      } else {
+        spContentEl.innerHTML = `<div class="text-xs text-red-400 p-2 text-center">Błąd autoryzacji API Spotify</div>`;
+      }
+    } catch(e){
+      spContentEl.innerHTML = `<div class="text-xs text-red-400 p-2 text-center">Błąd połączenia z API Spotify</div>`;
+    }
+  }
+
+  async function fetchCurrentlyPlaying(){
+    if(!accessToken) return;
+    try {
+      const res = await fetch('https://api.spotify.com/v1/me/player/currently-playing', {
+        headers: { 'Authorization': 'Bearer ' + accessToken }
+      });
+      if(res.status === 204 || res.status > 300){
+        isPlaying = false;
+        spContentEl.innerHTML = `
+          <div class="flex items-center gap-3">
+            <div class="w-11 h-11 rounded-xl bg-[#111827] border border-gray-800 flex items-center justify-center text-gray-400 flex-shrink-0">
+              <i class="fa-brands fa-spotify text-base"></i>
+            </div>
+            <div class="min-w-0 flex-1 text-left">
+              <div class="text-xs font-bold text-gray-200 truncate">Spotify wstrzymane</div>
+              <div class="text-[11px] text-gray-500 truncate">Nic teraz nie leci w tle</div>
+            </div>
+          </div>
+        `;
+        return;
+      }
+      const data = await res.json();
+      if(data && data.item){
+        isPlaying = data.is_playing;
+        const track = data.item;
+        const song = track.name;
+        const artist = track.artists.map(a => a.name).join(', ');
+        const albumArt = track.album.images[0] ? track.album.images[0].url : '';
+        const trackUrl = track.external_urls.spotify;
+        currentProgress = data.progress_ms || 0;
+        currentDuration = track.duration_ms || 180000;
+        const pct = Math.min(100, Math.max(0, (currentProgress / currentDuration) * 100)).toFixed(1);
+
+        spContentEl.innerHTML = `
+          <div class="flex items-center gap-3">
+            <img src="${escapeHtml(albumArt)}" alt="Album" class="rpc-cover"/>
+            <div class="min-w-0 flex-1 text-left">
+              <div class="flex items-center gap-1">
+                <a href="${escapeHtml(trackUrl)}" target="_blank" rel="noopener"
+                   class="text-xs font-bold text-white hover:text-[#1db954] transition-colors truncate">
+                  ${escapeHtml(song)}
+                </a>
+                <div class="eq-bars flex-shrink-0" title="Gra teraz">
+                  <span class="eq-bar"></span><span class="eq-bar"></span><span class="eq-bar"></span>
+                </div>
+              </div>
+              <div class="text-[11px] text-gray-400 truncate">${escapeHtml(artist)}</div>
+              <div class="sp-progress-bg">
+                <div class="sp-progress-fill" id="sp-bar" style="width:${pct}%"></div>
+              </div>
+              <div class="flex justify-between font-mono text-[9px] text-gray-500 mt-1">
+                <span id="sp-curr">${formatTime(currentProgress)}</span>
+                <span id="sp-total">${formatTime(currentDuration)}</span>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+    } catch(e){}
+  }
+
+  // Płynne aktualizowanie paska postępu co 1 sekundę
+  setInterval(() => {
+    if(!isPlaying) return;
+    currentProgress = Math.min(currentDuration, currentProgress + 1000);
+    const pct = Math.min(100, Math.max(0, (currentProgress / currentDuration) * 100)).toFixed(1);
+    const barEl = document.getElementById('sp-bar');
+    const currEl = document.getElementById('sp-curr');
+    if(barEl) barEl.style.width = pct + '%';
+    if(currEl) currEl.textContent = formatTime(currentProgress);
+  }, 1000);
+
+  fetchDiscordStatus();
+  initSpotify();
+  setInterval(fetchDiscordStatus, 10000);
 })();
 
 document.addEventListener('contextmenu', e => e.preventDefault(), true);
