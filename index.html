@@ -270,46 +270,18 @@ body::before{content:'';position:fixed;inset:0;
           </p>
         </div>
 
+        <!-- SPOTIFY WIDGET (BEZ NAPISU API LIVE) -->
         <div class="w-full flex flex-col gap-2 pt-1">
-          <div class="rpc-tabs" role="tablist">
-            <button class="rpc-tab active" id="tab-btn-spotify" onclick="switchRpcTab('spotify')" type="button">
-              <i class="fa-brands fa-spotify text-xs text-[#1db954]"></i>
-              <span>Spotify</span>
-              <span class="rpc-tab-dot bg-[#1db954]" id="dot-spotify"></span>
-            </button>
-            <button class="rpc-tab" id="tab-btn-activity" onclick="switchRpcTab('activity')" type="button">
-              <i class="fa-solid fa-gamepad text-[11px] text-cobalt"></i>
-              <span data-pl="Aktywność" data-en="Activity">Aktywność</span>
-              <span class="rpc-tab-dot bg-cobalt" id="dot-activity"></span>
-            </button>
-          </div>
-
-          <div class="rpc-panel active" id="panel-spotify">
+          <div class="spotify-panel" id="spotify-panel">
             <div id="spotify-content" class="flex flex-col justify-center">
               <div class="flex items-center gap-3">
                 <div class="w-11 h-11 rounded-xl bg-[#111827] border border-gray-800 flex items-center justify-center text-gray-400 flex-shrink-0">
                   <i class="fa-brands fa-spotify text-base"></i>
                 </div>
                 <div class="min-w-0 flex-1">
-                  <div class="text-xs font-bold text-gray-200 truncate"
-                       data-pl="Spotify wstrzymane" data-en="Spotify paused">Spotify wstrzymane</div>
-                  <div class="text-[11px] text-gray-500 truncate"
-                       data-pl="Nic teraz nie leci w tle" data-en="Nothing playing right now">Nic teraz nie leci w tle</div>
+                  <div class="text-xs font-bold text-gray-200 truncate">Spotify wstrzymane</div>
+                  <div class="text-[11px] text-gray-500 truncate">Nic teraz nie leci w tle</div>
                 </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="rpc-panel" id="panel-activity">
-            <div id="activity-content" class="flex items-center gap-3">
-              <div class="w-11 h-11 rounded-xl bg-[#111827] border border-gray-800 flex items-center justify-center text-gray-400 flex-shrink-0">
-                <i class="fa-solid fa-moon text-sm"></i>
-              </div>
-              <div class="min-w-0 flex-1">
-                <div class="text-xs font-bold text-gray-200 truncate"
-                     data-pl="Brak aktywności" data-en="No current activity">Brak aktywności</div>
-                <div class="text-[11px] text-gray-500 truncate"
-                     data-pl="Aktualnie w nic nie gram" data-en="Not playing anything right now">Aktualnie w nic nie gram</div>
               </div>
             </div>
           </div>
@@ -525,14 +497,6 @@ function setLang(l){
   });
   if(window._rerenderLanyard) window._rerenderLanyard();
 }
-let userManuallySwitchedTab = false;
-function switchRpcTab(tab, isAuto = false){
-  if(!isAuto) userManuallySwitchedTab = true;
-  document.getElementById('tab-btn-spotify').classList.toggle('active', tab === 'spotify');
-  document.getElementById('tab-btn-activity').classList.toggle('active', tab === 'activity');
-  document.getElementById('panel-spotify').classList.toggle('active', tab === 'spotify');
-  document.getElementById('panel-activity').classList.toggle('active', tab === 'activity');
-}
 const ro=new IntersectionObserver(e=>{
   e.forEach(x=>{if(x.isIntersecting){x.target.classList.add('in');ro.unobserve(x.target);}});
 },{threshold:.08,rootMargin:'0px 0px -24px 0px'});
@@ -554,140 +518,36 @@ const so=new IntersectionObserver(e=>{
   });
 },{threshold:.45});
 secs.forEach(s=>so.observe(s));
+
+// Integracja Discorda i Spotify
 (function(){
-  const UID          = '954471192096555048';
-  const FALLBACK     = 'https://dcdn.dstn.to/avatars/' + UID + '?size=256';
-  const avatarEl     = document.getElementById('lanyard-avatar');
-  const dotEl        = document.getElementById('lanyard-dot');
-  const statusTextEl = document.getElementById('lanyard-status-text');
-  const customStatEl = document.getElementById('lanyard-custom-status');
-  const actContentEl = document.getElementById('activity-content');
-  const spContentEl  = document.getElementById('spotify-content');
-  const dotActEl     = document.getElementById('dot-activity');
-  const dotSpEl      = document.getElementById('dot-spotify');
-  let latestData = null;
+  const UID = '954471192096555048';
+  const FALLBACK = 'https://dcdn.dstn.to/avatars/' + UID + '?size=256';
+  const avatarEl = document.getElementById('lanyard-avatar');
+  const dotEl = document.getElementById('lanyard-dot');
+  const spContentEl = document.getElementById('spotify-content');
+
   const statusColor = {
-    online:  '#22c55e',   
-    idle:    '#f59e0b',   
-    dnd:     '#ef4444',   
-    offline: '#6b7280',   
+    online: '#22c55e',
+    idle: '#f59e0b',
+    dnd: '#ef4444',
+    offline: '#6b7280',
   };
-  const statusLabelPL = {
-    online: 'Online', idle: 'Zaraz wracam', dnd: 'Nie przeszkadzać', offline: 'Offline'
-  };
-  const statusLabelEN = {
-    online: 'Online', idle: 'Idle', dnd: 'Do Not Disturb', offline: 'Offline'
-  };
+
   function escapeHtml(str){
     if(!str) return '';
     return String(str).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
   }
   function formatTime(ms){
     const totalSec = Math.max(0, Math.floor(ms / 1000));
-    const hrs = Math.floor(totalSec / 3600);
-    const mins = Math.floor((totalSec % 3600) / 60);
+    const mins = Math.floor(totalSec / 60);
     const secs = totalSec % 60;
-    const pad = n => String(n).padStart(2, '0');
-    return hrs > 0 ? `${hrs}:${pad(mins)}:${pad(secs)}` : `${mins}:${pad(secs)}`;
+    return `${mins}:${String(secs).padStart(2, '0')}`;
   }
-  function resolveAssetUrl(appId, assetId){
-    if(!assetId) return null;
-    if(assetId.startsWith('mp:external/')){
-      return 'https://media.discordapp.net/external/' + assetId.replace('mp:external/', '');
-    }
-    if(appId){
-      return `https://cdn.discordapp.com/app-assets/${appId}/${assetId}.png`;
-    }
-    return null;
-  }
-  function renderPresence(jsonObj){
-    if(!jsonObj) return;
-    latestData = jsonObj;
-    const data = jsonObj.data || jsonObj;
-    const user = data.discord_user;
-    if(user && user.avatar){
-      const ext = user.avatar.startsWith('a_') ? 'gif' : 'png';
-      avatarEl.src = `https://cdn.discordapp.com/avatars/${UID}/${user.avatar}.${ext}?size=256`;
-    }
-    const st = data.discord_status || 'offline';
-    const labelMap = currentLang === 'pl' ? statusLabelPL : statusLabelEN;
-    dotEl.style.background = statusColor[st] || statusColor.offline;
-    dotEl.title = labelMap[st] || 'Offline';
-    if(statusTextEl) statusTextEl.textContent = labelMap[st] || 'Offline';
-    const activities = Array.isArray(data.activities) ? data.activities : [];
-    const customAct = activities.find(a => a.type === 4);
-    if(customStatEl){
-      if(customAct && customAct.state){
-        const emoji = customAct.emoji && customAct.emoji.name ? customAct.emoji.name + ' ' : '';
-        customStatEl.textContent = emoji + customAct.state;
-      } else {
-        customStatEl.textContent = 'Full Stack & FiveM Developer';
-      }
-    }
-    const mainAct = activities.find(a => a.type !== 4 && a.id !== 'spotify:1' && a.name !== 'Spotify');
-    dotActEl.classList.toggle('show', !!mainAct);
-    if(mainAct){
-      const imgUrl = mainAct.assets ? resolveAssetUrl(mainAct.application_id, mainAct.assets.large_image) : null;
-      const smallImgUrl = mainAct.assets ? resolveAssetUrl(mainAct.application_id, mainAct.assets.small_image) : null;
-      const startMs = mainAct.timestamps && mainAct.timestamps.start ? mainAct.timestamps.start : null;
-      const elapsedStr = startMs ? formatTime(Date.now() - startMs) : '';
-      actContentEl.innerHTML = `
-        <div class="relative flex-shrink-0">
-          ${imgUrl
-            ? `<img src="${escapeHtml(imgUrl)}" alt="${escapeHtml(mainAct.name)}" class="rpc-cover"/>`
-            : `<div class="rpc-cover flex items-center justify-center bg-[#111827] text-cobalt"><i class="fa-solid fa-code text-base"></i></div>`
-          }
-          ${smallImgUrl
-            ? `<img src="${escapeHtml(smallImgUrl)}" alt="" class="w-5 h-5 rounded-full border-2 border-[#111827] absolute -bottom-1 -right-1 bg-[#111827] object-cover"/>`
-            : ''
-          }
-        </div>
-        <div class="min-w-0 flex-1 text-left">
-          <div class="flex items-center justify-between gap-1">
-            <span class="text-xs font-bold text-white truncate">${escapeHtml(mainAct.name)}</span>
-            ${elapsedStr ? `<span class="font-mono text-[10px] text-cobalt bg-[#111827] border border-gray-800 px-1.5 py-0.5 rounded font-semibold flex-shrink-0" id="act-timer" data-start="${startMs}">${elapsedStr}</span>` : ''}
-          </div>
-          ${mainAct.details ? `<div class="text-[11px] text-gray-300 truncate">${escapeHtml(mainAct.details)}</div>` : ''}
-          ${mainAct.state ? `<div class="text-[11px] text-gray-500 truncate">${escapeHtml(mainAct.state)}</div>` : ''}
-        </div>
-      `;
-    } else {
-      const noActTitle = currentLang === 'pl' ? 'Brak aktywności' : 'No current activity';
-      const noActSub   = currentLang === 'pl' ? 'Aktualnie w nic nie gram' : 'Not playing anything right now';
-      actContentEl.innerHTML = `
-        <div class="w-11 h-11 rounded-xl bg-[#111827] border border-gray-800 flex items-center justify-center text-gray-500 flex-shrink-0">
-          <i class="fa-solid fa-moon text-sm"></i>
-        </div>
-        <div class="min-w-0 flex-1 text-left">
-          <div class="text-xs font-bold text-gray-200 truncate">${noActTitle}</div>
-          <div class="text-[11px] text-gray-500 truncate">${noActSub}</div>
-        </div>
-      `;
-    }
-    
-    // Kompleksowe parsowanie Spotify z uwzględnieniem struktur Lanyard REST / WebSocket
-    const spotifyActivity = activities.find(a => a.id === 'spotify:1' || a.name === 'Spotify');
-    const rawSp = data.spotify || spotifyActivity;
-    let sp = null;
-    if (data.listening_to_spotify && rawSp) {
-      sp = {
-        song: rawSp.song || rawSp.details,
-        artist: rawSp.artist || rawSp.state,
-        album_art_url: rawSp.album_art_url || (rawSp.assets && rawSp.assets.large_image ? `https://i.scdn.co/image/${rawSp.assets.large_image.replace('spotify:', '')}` : 'https://developer.spotify.com/assets/branding-guidelines/icon3x.png'),
-        track_id: rawSp.track_id || rawSp.sync_id,
-        timestamps: rawSp.timestamps
-      };
-    } else if (spotifyActivity) {
-      sp = {
-        song: spotifyActivity.details,
-        artist: spotifyActivity.state,
-        album_art_url: spotifyActivity.assets && spotifyActivity.assets.large_image ? `https://i.scdn.co/image/${spotifyActivity.assets.large_image.replace('spotify:', '')}` : 'https://developer.spotify.com/assets/branding-guidelines/icon3x.png',
-        track_id: spotifyActivity.sync_id,
-        timestamps: spotifyActivity.timestamps
-      };
-    }
 
-    dotSpEl.classList.toggle('show', !!sp);
+  let latestSp = null;
+
+  function renderSpotify(sp){
     if(sp){
       const artist = (sp.artist || '').replace(/; /g, ', ');
       const start = sp.timestamps && sp.timestamps.start ? sp.timestamps.start : 0;
@@ -696,6 +556,7 @@ secs.forEach(s=>so.observe(s));
       const curr  = Math.min(total, Math.max(0, Date.now() - start));
       const pct   = Math.min(100, Math.max(0, (curr / total) * 100)).toFixed(1);
       const trackUrl = sp.track_id ? `https://open.spotify.com/track/${sp.track_id}` : '#';
+
       spContentEl.innerHTML = `
         <div class="flex items-center gap-3">
           <img src="${escapeHtml(sp.album_art_url)}" alt="Album" class="rpc-cover"/>
@@ -725,7 +586,7 @@ secs.forEach(s=>so.observe(s));
       const noSpSub   = currentLang === 'pl' ? 'Nic teraz nie leci w tle' : 'Nothing playing right now';
       spContentEl.innerHTML = `
         <div class="flex items-center gap-3">
-          <div class="w-11 h-11 rounded-xl bg-[#111827] border border-gray-800 flex items-center justify-center text-gray-500 flex-shrink-0">
+          <div class="w-11 h-11 rounded-xl bg-[#111827] border border-gray-800 flex items-center justify-center text-gray-400 flex-shrink-0">
             <i class="fa-brands fa-spotify text-base"></i>
           </div>
           <div class="min-w-0 flex-1 text-left">
@@ -735,69 +596,67 @@ secs.forEach(s=>so.observe(s));
         </div>
       `;
     }
-    if(!userManuallySwitchedTab){
-      if(sp){
-        switchRpcTab('spotify', true);
-      } else if(mainAct){
-        switchRpcTab('activity', true);
-      }
-    }
   }
-  window._rerenderLanyard = () => renderPresence(latestData);
+
   setInterval(() => {
-    if(!latestData) return;
-    const actTimer = document.getElementById('act-timer');
-    if(actTimer && actTimer.dataset.start){
-      actTimer.textContent = formatTime(Date.now() - Number(actTimer.dataset.start));
-    }
-    const data = latestData.data || latestData;
-    const activities = Array.isArray(data.activities) ? data.activities : [];
-    const spotifyActivity = activities.find(a => a.id === 'spotify:1' || a.name === 'Spotify');
-    const sp = data.spotify || spotifyActivity;
-    if(sp && sp.timestamps){
-      const start = sp.timestamps.start;
-      const end   = sp.timestamps.end;
-      const total = Math.max(1, end - start);
-      const curr  = Math.min(total, Math.max(0, Date.now() - start));
-      const pct   = Math.min(100, Math.max(0, (curr / total) * 100)).toFixed(1);
-      const barEl  = document.getElementById('sp-bar');
-      const currEl = document.getElementById('sp-curr');
-      if(barEl)  barEl.style.width = pct + '%';
-      if(currEl) currEl.textContent = formatTime(curr);
-    }
+    if(!latestSp || !latestSp.timestamps) return;
+    const start = latestSp.timestamps.start;
+    const end   = latestSp.timestamps.end;
+    const total = Math.max(1, end - start);
+    const curr  = Math.min(total, Math.max(0, Date.now() - start));
+    const pct   = Math.min(100, Math.max(0, (curr / total) * 100)).toFixed(1);
+    const barEl  = document.getElementById('sp-bar');
+    const currEl = document.getElementById('sp-curr');
+    if(barEl)  barEl.style.width = pct + '%';
+    if(currEl) currEl.textContent = formatTime(curr);
   }, 1000);
-  fetch('https://api.lanyard.rest/v1/users/' + UID)
-    .then(r => r.json())
-    .then(json => {
-      if(json.success && json.data) renderPresence(json);
-    })
-    .catch(() => { avatarEl.src = FALLBACK; });
-  let hbInterval = null;
-  function connectLanyardWS(){
-    try {
-      const ws = new WebSocket('wss://api.lanyard.rest/socket');
-      ws.onmessage = e => {
-        const msg = JSON.parse(e.data);
-        if(msg.op === 1){
-          ws.send(JSON.stringify({ op: 2, d: { subscribe_to_id: UID } }));
-          clearInterval(hbInterval);
-          hbInterval = setInterval(() => {
-            if(ws.readyState === WebSocket.OPEN) ws.send(JSON.stringify({ op: 3 }));
-          }, msg.d.heartbeat_interval);
+
+  function fetchData(){
+    fetch('https://api.lanyard.rest/v1/users/' + UID)
+      .then(r => r.json())
+      .then(json => {
+        if(json.success && json.data){
+          const data = json.data;
+          
+          const user = data.discord_user;
+          if(user && user.avatar){
+            const ext = user.avatar.startsWith('a_') ? 'gif' : 'png';
+            avatarEl.src = `https://cdn.discordapp.com/avatars/${UID}/${user.avatar}.${ext}?size=256`;
+          }
+          const st = data.discord_status || 'offline';
+          dotEl.style.background = statusColor[st] || statusColor.offline;
+
+          const spotifyActivity = Array.isArray(data.activities) ? data.activities.find(a => a.id === 'spotify:1' || a.name === 'Spotify') : null;
+          const rawSp = data.spotify || spotifyActivity;
+          if(data.listening_to_spotify && rawSp){
+            latestSp = {
+              song: rawSp.song || rawSp.details,
+              artist: rawSp.artist || rawSp.state,
+              album_art_url: rawSp.album_art_url || (rawSp.assets && rawSp.assets.large_image ? `https://i.scdn.co/image/${rawSp.assets.large_image.replace('spotify:', '')}` : 'https://developer.spotify.com/assets/branding-guidelines/icon3x.png'),
+              track_id: rawSp.track_id || rawSp.sync_id,
+              timestamps: rawSp.timestamps
+            };
+          } else if(spotifyActivity){
+            latestSp = {
+              song: spotifyActivity.details,
+              artist: spotifyActivity.state,
+              album_art_url: spotifyActivity.assets && spotifyActivity.assets.large_image ? `https://i.scdn.co/image/${spotifyActivity.assets.large_image.replace('spotify:', '')}` : 'https://developer.spotify.com/assets/branding-guidelines/icon3x.png',
+              track_id: spotifyActivity.sync_id,
+              timestamps: spotifyActivity.timestamps
+            };
+          } else {
+            latestSp = null;
+          }
+          renderSpotify(latestSp);
         }
-        if(msg.op === 0 && msg.d){
-          renderPresence({ data: msg.d });
-        }
-      };
-      ws.onclose = () => {
-        clearInterval(hbInterval);
-        setTimeout(connectLanyardWS, 5000);
-      };
-      ws.onerror = () => ws.close();
-    } catch(e){}
+      })
+      .catch(() => {});
   }
-  connectLanyardWS();
+
+  fetchData();
+  setInterval(fetchData, 8000);
 })();
+
 document.addEventListener('contextmenu', e => e.preventDefault(), true);
 document.addEventListener('selectstart', e => e.preventDefault(), true);
 document.addEventListener('dragstart', e => e.preventDefault(), true);
