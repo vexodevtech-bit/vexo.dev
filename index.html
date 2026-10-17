@@ -665,7 +665,7 @@ secs.forEach(s=>so.observe(s));
       `;
     }
     
-    // Bezpośrednie wyciąganie Spotify z obiektu danych Lanyard lub tablicy aktywności
+    // Kompleksowe parsowanie Spotify z uwzględnieniem struktur Lanyard REST / WebSocket
     const spotifyActivity = activities.find(a => a.id === 'spotify:1' || a.name === 'Spotify');
     const rawSp = data.spotify || spotifyActivity;
     let sp = null;
