@@ -25,19 +25,10 @@
 *,*::before,*::after{box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;font-family:'Inter',system-ui,sans-serif;background:#050505;color:#f8fafc;-webkit-font-smoothing:antialiased;overflow-x:hidden;position:relative}
-
-/* Tło z geometrycznym motywem w stylu nadesłanej inspiracji */
 body::before{content:'';position:fixed;inset:0;
-  background-image:
-    linear-gradient(rgba(37,99,235,.03) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(37,99,235,.03) 1px,transparent 1px),
-    radial-gradient(circle at 50% 20%, rgba(37,99,235,.08) 0%, transparent 50%);
-  background-size:48px 48px, 48px 48px, 100% 100%;
-  pointer-events:none;z-index:0}
-
-/* Wodny/geometria w tle strony */
+  background-image:linear-gradient(rgba(37,99,235,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(37,99,235,.025) 1px,transparent 1px);
+  background-size:44px 44px;pointer-events:none;z-index:0}
 .bg-watermark{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:700px;height:700px;opacity:0.035;pointer-events:none;z-index:0;display:flex;align-items:center;justify-content:center}
-
 ::-webkit-scrollbar{width:4px}
 ::-webkit-scrollbar-track{background:#050505}
 ::-webkit-scrollbar-thumb{background:#1f2937;border-radius:4px}
@@ -160,7 +151,6 @@ body::before{content:'';position:fixed;inset:0;
 </style>
 </head>
 <body>
-<!-- WODNY ZNAK / LOGO W TLE NA CAŁĄ STRONĘ -->
 <div class="bg-watermark">
   <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
     <path d="M25 20L45 80H55L75 20H63L50 58L37 20H25Z" fill="#2563eb"/>
@@ -304,7 +294,7 @@ body::before{content:'';position:fixed;inset:0;
                   <div class="text-xs font-bold text-gray-200 truncate"
                        data-pl="Spotify wstrzymane" data-en="Spotify paused">Spotify wstrzymane</div>
                   <div class="text-[11px] text-gray-500 truncate"
-                       data-pl="Nic teraz nie leci w tle" data-en="Nothing playing right now">Nothing playing right now</div>
+                       data-pl="Nic teraz nie leci w tle" data-en="Nothing playing right now">Nic teraz nie leci w tle</div>
                 </div>
               </div>
             </div>
@@ -610,9 +600,10 @@ secs.forEach(s=>so.observe(s));
     }
     return null;
   }
-  function renderPresence(data){
-    if(!data) return;
-    latestData = data;
+  function renderPresence(jsonObj){
+    if(!jsonObj) return;
+    latestData = jsonObj;
+    const data = jsonObj.data || jsonObj;
     const user = data.discord_user;
     if(user && user.avatar){
       const ext = user.avatar.startsWith('a_') ? 'gif' : 'png';
@@ -673,14 +664,28 @@ secs.forEach(s=>so.observe(s));
         </div>
       `;
     }
+    
+    // Bezpośrednie wyciąganie Spotify z obiektu danych Lanyard lub tablicy aktywności
     const spotifyActivity = activities.find(a => a.id === 'spotify:1' || a.name === 'Spotify');
-    const sp = (data.listening_to_spotify && data.spotify) ? data.spotify : (spotifyActivity ? {
-      song: spotifyActivity.details,
-      artist: spotifyActivity.state,
-      album_art_url: spotifyActivity.assets && spotifyActivity.assets.large_image ? `https://i.scdn.co/image/${spotifyActivity.assets.large_image.replace('spotify:', '')}` : 'https://developer.spotify.com/assets/branding-guidelines/icon3x.png',
-      track_id: spotifyActivity.sync_id,
-      timestamps: spotifyActivity.timestamps
-    } : null);
+    const rawSp = data.spotify || spotifyActivity;
+    let sp = null;
+    if (data.listening_to_spotify && rawSp) {
+      sp = {
+        song: rawSp.song || rawSp.details,
+        artist: rawSp.artist || rawSp.state,
+        album_art_url: rawSp.album_art_url || (rawSp.assets && rawSp.assets.large_image ? `https://i.scdn.co/image/${rawSp.assets.large_image.replace('spotify:', '')}` : 'https://developer.spotify.com/assets/branding-guidelines/icon3x.png'),
+        track_id: rawSp.track_id || rawSp.sync_id,
+        timestamps: rawSp.timestamps
+      };
+    } else if (spotifyActivity) {
+      sp = {
+        song: spotifyActivity.details,
+        artist: spotifyActivity.state,
+        album_art_url: spotifyActivity.assets && spotifyActivity.assets.large_image ? `https://i.scdn.co/image/${spotifyActivity.assets.large_image.replace('spotify:', '')}` : 'https://developer.spotify.com/assets/branding-guidelines/icon3x.png',
+        track_id: spotifyActivity.sync_id,
+        timestamps: spotifyActivity.timestamps
+      };
+    }
 
     dotSpEl.classList.toggle('show', !!sp);
     if(sp){
@@ -745,9 +750,10 @@ secs.forEach(s=>so.observe(s));
     if(actTimer && actTimer.dataset.start){
       actTimer.textContent = formatTime(Date.now() - Number(actTimer.dataset.start));
     }
-    const activities = Array.isArray(latestData.activities) ? latestData.activities : [];
+    const data = latestData.data || latestData;
+    const activities = Array.isArray(data.activities) ? data.activities : [];
     const spotifyActivity = activities.find(a => a.id === 'spotify:1' || a.name === 'Spotify');
-    const sp = (latestData.listening_to_spotify && latestData.spotify) ? latestData.spotify : (spotifyActivity ? spotifyActivity : null);
+    const sp = data.spotify || spotifyActivity;
     if(sp && sp.timestamps){
       const start = sp.timestamps.start;
       const end   = sp.timestamps.end;
@@ -763,7 +769,7 @@ secs.forEach(s=>so.observe(s));
   fetch('https://api.lanyard.rest/v1/users/' + UID)
     .then(r => r.json())
     .then(json => {
-      if(json.success && json.data) renderPresence(json.data);
+      if(json.success && json.data) renderPresence(json);
     })
     .catch(() => { avatarEl.src = FALLBACK; });
   let hbInterval = null;
@@ -780,7 +786,7 @@ secs.forEach(s=>so.observe(s));
           }, msg.d.heartbeat_interval);
         }
         if(msg.op === 0 && msg.d){
-          renderPresence(msg.d);
+          renderPresence({ data: msg.d });
         }
       };
       ws.onclose = () => {
