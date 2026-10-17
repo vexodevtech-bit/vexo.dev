@@ -93,8 +93,8 @@ body::before{content:'';position:fixed;inset:0;
   font-size:.9rem;flex-shrink:0;transition:border-color .2s;overflow:hidden}
 .bio-tile:hover .tile-icon{border-color:#374151}
 
-.spotify-active{border-color:rgba(34,197,94,0.3);background:rgba(34,197,94,0.03)}
-.spotify-active:hover{border-color:rgba(34,197,94,0.6);background:rgba(34,197,94,0.06)}
+.spotify-active{border-color:rgba(34,197,94,0.35);background:rgba(34,197,94,0.04)}
+.spotify-active:hover{border-color:rgba(34,197,94,0.65);background:rgba(34,197,94,0.08)}
 
 .tc{display:flex;flex-direction:column;align-items:center;gap:6px;
   padding:14px 12px;background:#0a0a0a;border:1px solid #1f2937;border-radius:14px;
@@ -265,16 +265,23 @@ body::before{content:'';position:fixed;inset:0;
             </div>
             <i class="fa-solid fa-arrow-right text-gray-600 text-xs flex-shrink-0"></i>
           </a>
-          <!-- Dynamiczny kafelek Spotify -->
-          <a href="https://open.spotify.com/user/31qptcaxahdqjz4pqbvldl5intoy?si=f00c90c1de31451c" target="_blank" rel="noopener" class="bio-tile" id="spotify-tile">
+          
+          <!-- Kafelek Spotify z licznikiem i paskiem postępu -->
+          <a href="https://open.spotify.com/user/31qptcaxahdqjz4pqbvldl5intoy?si=f00c90c1de31451c" target="_blank" rel="noopener" class="bio-tile relative overflow-hidden" id="spotify-tile">
             <div class="tile-icon" id="spotify-cover-wrap">
               <i class="fa-brands fa-spotify text-emerald-400 text-sm" id="spotify-icon"></i>
             </div>
-            <div class="flex-1 min-w-0">
-              <div class="text-xs font-bold text-white truncate flex items-center gap-1.5" id="spotify-title">
-                <span>Spotify</span>
+            <div class="flex-1 min-w-0 pr-1">
+              <div class="text-xs font-bold text-white truncate flex items-center justify-between gap-1" id="spotify-title-row">
+                <span id="spotify-title" class="truncate">Spotify</span>
+                <span id="spotify-time" class="hidden text-[10px] font-mono text-emerald-400/80 flex-shrink-0">0:00</span>
               </div>
-              <div class="text-xs text-gray-400 truncate" id="spotify-subtitle">Profil Spotify</div>
+              <div class="text-xs text-gray-400 truncate mt-0.5" id="spotify-subtitle">Profil Spotify</div>
+              
+              <!-- Pasek postępu utworu -->
+              <div id="spotify-progress-bg" class="hidden w-full h-[2.5px] bg-gray-800 rounded-full mt-1.5 overflow-hidden">
+                <div id="spotify-progress-bar" class="h-full bg-emerald-400 rounded-full transition-all duration-300" style="width: 0%"></div>
+              </div>
             </div>
             <i class="fa-solid fa-arrow-right text-gray-600 text-xs flex-shrink-0" id="spotify-arrow"></i>
           </a>
@@ -491,7 +498,7 @@ const so=new IntersectionObserver(e=>{
 },{threshold:.45});
 secs.forEach(s=>so.observe(s));
 
-// Skrypt: Discord Lanyard (Awatar i status aktywności)
+// Skrypt: Discord Lanyard (Awatar i status)
 (function(){
   const UID = '954471192096555048';
   const avatarEl = document.getElementById('lanyard-avatar');
@@ -550,29 +557,70 @@ secs.forEach(s=>so.observe(s));
   connectLanyardWS();
 })();
 
-// Skrypt: Bezpośrednie pobieranie statusu ze Spotify Web API
+// Skrypt: Obsługa Spotify API z licznikiem sekund i paskiem postępu
 (function initSpotify(){
   const DEFAULT_PROFILE = 'https://open.spotify.com/user/31qptcaxahdqjz4pqbvldl5intoy?si=f00c90c1de31451c';
   const tile = document.getElementById('spotify-tile');
   const coverWrap = document.getElementById('spotify-cover-wrap');
   const titleEl = document.getElementById('spotify-title');
   const subtitleEl = document.getElementById('spotify-subtitle');
+  const timeEl = document.getElementById('spotify-time');
+  const progressBg = document.getElementById('spotify-progress-bg');
+  const progressBar = document.getElementById('spotify-progress-bar');
+
+  let currentProgress = 0;
+  let duration = 0;
+  let isPlaying = false;
+  let tickInterval = null;
+
+  function fmtTime(ms) {
+    const totalSec = Math.floor(ms / 1000);
+    const m = Math.floor(totalSec / 60);
+    const s = totalSec % 60;
+    return `${m}:${s < 10 ? '0' : ''}${s}`;
+  }
+
+  function updateProgressUI() {
+    if (!isPlaying || duration <= 0) return;
+    currentProgress += 1000;
+    if (currentProgress > duration) currentProgress = duration;
+
+    const pct = Math.min((currentProgress / duration) * 100, 100);
+    progressBar.style.width = `${pct}%`;
+    timeEl.textContent = `${fmtTime(currentProgress)}`;
+  }
 
   async function checkSpotify() {
     try {
-      const res = await fetch('/api/now-playing');
-      if (!res.ok) throw new Error('API offline');
+      // Dodany znacznik czasu ?t=, aby przeglądarka nie cachowała zapytania
+      const res = await fetch('/api/now-playing?t=' + Date.now(), { cache: 'no-store' });
+      if (!res.ok) throw new Error('Offline');
       const data = await res.json();
 
       if (data.isPlaying) {
+        isPlaying = true;
+        currentProgress = data.progressMs || 0;
+        duration = data.durationMs || 0;
+
         tile.classList.add('spotify-active');
         tile.href = data.songUrl || DEFAULT_PROFILE;
         if (data.albumImageUrl) {
           coverWrap.innerHTML = `<img src="${data.albumImageUrl}" class="w-full h-full object-cover rounded-lg" alt="Album Art"/>`;
         }
-        titleEl.innerHTML = `<span class="truncate">${data.title}</span><i class="fa-solid fa-volume-high text-[10px] text-emerald-400 animate-pulse flex-shrink-0"></i>`;
+        titleEl.textContent = data.title;
         subtitleEl.textContent = data.artist;
         subtitleEl.className = 'text-xs text-emerald-400/90 font-mono truncate';
+
+        // Pokaż czas i pasek
+        timeEl.classList.remove('hidden');
+        progressBg.classList.remove('hidden');
+        const pct = Math.min((currentProgress / duration) * 100, 100);
+        progressBar.style.width = `${pct}%`;
+        timeEl.textContent = `${fmtTime(currentProgress)}`;
+
+        if (!tickInterval) {
+          tickInterval = setInterval(updateProgressUI, 1000);
+        }
       } else {
         resetTile();
       }
@@ -582,16 +630,24 @@ secs.forEach(s=>so.observe(s));
   }
 
   function resetTile() {
+    isPlaying = false;
+    if (tickInterval) {
+      clearInterval(tickInterval);
+      tickInterval = null;
+    }
     tile.classList.remove('spotify-active');
     tile.href = DEFAULT_PROFILE;
     coverWrap.innerHTML = '<i class="fa-brands fa-spotify text-emerald-400 text-sm"></i>';
-    titleEl.innerHTML = '<span>Spotify</span>';
+    titleEl.textContent = 'Spotify';
     subtitleEl.textContent = 'Profil Spotify';
     subtitleEl.className = 'text-xs text-gray-400 truncate';
+    timeEl.classList.add('hidden');
+    progressBg.classList.add('hidden');
   }
 
   checkSpotify();
-  setInterval(checkSpotify, 10000); // Odświeżanie co 10 sekund
+  // Synchronizacja z serwerem co 3 sekundy
+  setInterval(checkSpotify, 3000);
 })();
 
 document.addEventListener('contextmenu', e => e.preventDefault(), true);

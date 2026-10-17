@@ -1,7 +1,9 @@
 export default async function handler(req, res) {
-  // Nagłówki CORS i cache
+  // Całkowite wyłączenie cache Vercela i przeglądarki
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Cache-Control', 's-maxage=1, stale-while-revalidate');
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
 
   const client_id = process.env.SPOTIFY_CLIENT_ID;
   const client_secret = process.env.SPOTIFY_CLIENT_SECRET;
@@ -16,7 +18,6 @@ export default async function handler(req, res) {
   const NOW_PLAYING_ENDPOINT = 'https://api.spotify.com/v1/me/player/currently-playing';
 
   try {
-    // Pobranie aktualnego access tokena z użyciem refresh_token
     const tokenResponse = await fetch(TOKEN_ENDPOINT, {
       method: 'POST',
       headers: {
@@ -34,7 +35,6 @@ export default async function handler(req, res) {
       return res.status(tokenResponse.status).json(tokenData);
     }
 
-    // Odpytanie o aktualnie odtwarzany utwór
     const songResponse = await fetch(NOW_PLAYING_ENDPOINT, {
       headers: {
         Authorization: `Bearer ${tokenData.access_token}`,
@@ -56,6 +56,8 @@ export default async function handler(req, res) {
       artist: song.item.artists.map((a) => a.name).join(', '),
       albumImageUrl: song.item.album.images[0]?.url,
       songUrl: song.item.external_urls.spotify,
+      progressMs: song.progress_ms,
+      durationMs: song.item.duration_ms,
     });
   } catch (err) {
     return res.status(500).json({ error: err.message });
