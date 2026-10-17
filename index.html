@@ -179,7 +179,7 @@ body::before{content:'';position:fixed;inset:0;
     <div id="mmenu">
       <a href="#about"    class="mlink" onclick="closeMenu()" data-pl="O&nbsp;mnie"  data-en="About">O&nbsp;mnie</a>
       <a href="#services" class="mlink" onclick="closeMenu()" data-pl="Stack"       data-en="Stack">Stack</a>
-      <a href="#contact"  class="mlink" onclick="closeMenu()" data-pl="Kontakt" data-en="Kontakt">Kontakt</a>
+      <a href="#contact"  class="mlink" onclick="closeMenu()" data-pl="Kontakt" data-en="Contact">Kontakt</a>
       <div class="flex items-center gap-3 pt-3">
         <div class="lang-wrap">
           <button class="lang-btn on" onclick="setLang('pl');closeMenu()">PL</button>
@@ -266,8 +266,8 @@ body::before{content:'';position:fixed;inset:0;
                   <i class="fa-brands fa-spotify text-base"></i>
                 </div>
                 <div class="min-w-0 flex-1">
-                  <div class="text-xs font-bold text-gray-200 truncate">Ładowanie Spotify API...</div>
-                  <div class="text-[11px] text-gray-500 truncate">Pobieranie utworu</div>
+                  <div class="text-xs font-bold text-gray-200 truncate">Ładowanie Spotify...</div>
+                  <div class="text-[11px] text-gray-500 truncate">Pobieranie z API</div>
                 </div>
               </div>
             </div>
@@ -432,7 +432,7 @@ body::before{content:'';position:fixed;inset:0;
     <span class="font-mono text-xs text-gray-500"
           data-pl="© 2026 — Wszystkie Prawa Zastrzeżone"
           data-en="© 2026 — All Rights Reserved">
-      © 2026 — Wszystkie Prawa Zastrzeżone
+      © 2026 — All Rights Reserved
     </span>
     <div class="defs flex items-center gap-5">
       <a href="#about" class="font-mono text-xs text-gray-500 hover:text-cobalt transition-colors"
@@ -505,7 +505,7 @@ const so=new IntersectionObserver(e=>{
 },{threshold:.45});
 secs.forEach(s=>so.observe(s));
 
-// Skrypt: Discord Lanyard (awatar + status) oraz bezpośrednie Spotify API z autoryzacją
+// Skrypt omijający CORS i odświeżający token co 1 sekundę zgodnie z dokumentacją Spotify API
 (function(){
   const UID = '954471192096555048';
   const avatarEl = document.getElementById('lanyard-avatar');
@@ -549,25 +549,24 @@ secs.forEach(s=>so.observe(s));
       .catch(() => {});
   }
 
-  // 2. Bezpośrednie Spotify Web API (Świeży Kod Autoryzacyjny wklejony poniżej)
+  // 2. Bezpośrednie Spotify API z autoryzacją i Refresh Tokenem
   const CLIENT_ID = 'f738375950f94b05b3b5a5a67576f080';
   const CLIENT_SECRET = '441eb30552aa4954ad0a720d25c463e4';
-  const AUTH_CODE = 'AQDwOUj2eqXf39zwioGNuYqH_WnZmUJp_ALFwUaVY0s959UzjJr692lk02pXDjIsbKce5Hxv-X16t3xU8CG8MuQrD5DPGRytG8PH3ArsBqos4G7YxweUIwsRCNPpJ49RWPmkLnGXuTW_y2lJiQnxvv4a4-Vpz8-sSGRRCqrVrKRaQ1xTB-mAREs74mo9rscX014GQ-H35eWaUkEX9sXN042TZN8ooEZtfwvWJwSBIyV23C1LACnVgjoHorNWTvkVunSgwpdk5DHjknBFkYD3k_jfEDPZteUXGw';
-  const REDIRECT_URI = 'https://www.vexotech.pl';
+  const REFRESH_TOKEN = 'spak_bZCOlyTMS2ZZziERdPJl8gtQuhVx0TLZ';
+  
   let accessToken = null;
   let currentProgress = 0;
   let currentDuration = 0;
   let isPlaying = false;
 
-  async function initSpotify(){
+  async function refreshAccessToken(){
     try {
       const response = await fetch('https://accounts.spotify.com/api/token', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams({
-          grant_type: 'authorization_code',
-          code: AUTH_CODE,
-          redirect_uri: REDIRECT_URI,
+          grant_type: 'refresh_token',
+          refresh_token: REFRESH_TOKEN,
           client_id: CLIENT_ID,
           client_secret: CLIENT_SECRET
         })
@@ -576,20 +575,17 @@ secs.forEach(s=>so.observe(s));
       if(data.access_token){
         accessToken = data.access_token;
         fetchCurrentlyPlaying();
-        setInterval(fetchCurrentlyPlaying, 3000); // Odpytanie Spotify API co 3 sekundy
-      } else {
-        spContentEl.innerHTML = `<div class="text-xs text-red-400 p-2 text-center">Błąd autoryzacji API Spotify</div>`;
       }
-    } catch(e){
-      spContentEl.innerHTML = `<div class="text-xs text-red-400 p-2 text-center">Błąd połączenia z API Spotify</div>`;
-    }
+    } catch(e){}
   }
 
   async function fetchCurrentlyPlaying(){
     if(!accessToken) return;
     try {
       const res = await fetch('https://api.spotify.com/v1/me/player/currently-playing', {
-        headers: { 'Authorization': 'Bearer ' + accessToken }
+        headers: {
+          'Authorization': 'Bearer ' + accessToken
+        }
       });
       if(res.status === 204 || res.status > 300){
         isPlaying = false;
@@ -657,8 +653,11 @@ secs.forEach(s=>so.observe(s));
     if(currEl) currEl.textContent = formatTime(currentProgress);
   }, 1000);
 
+  // Pętle odświeżania: utwór co 1 sekundę, nowy token co 50 minut, status Discorda co 10 sekund
   fetchDiscordStatus();
-  initSpotify();
+  refreshAccessToken();
+  setInterval(fetchCurrentlyPlaying, 1000);
+  setInterval(refreshAccessToken, 3000000);
   setInterval(fetchDiscordStatus, 10000);
 })();
 
